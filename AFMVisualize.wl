@@ -23,6 +23,7 @@ BeginPackage["AFMVisualize`"]
 	AddBFieldDC::usage = "Add one DC magnetic field (flux)";
 	RemoveEasy::usage  = "Remove one easy axis";
 	RemoveHard::usage  = "Remove one easy axis";
+	RemoveBFieldDC::usage = "Remove one Zeeman field";
 	ResetAll::usage    = "Reset every magnetic params";
 	DispConfg::usage   = "Display the field configurations";
 	DispM::usage       = "Display the magnetic moments";
@@ -52,6 +53,7 @@ Begin["`Private`"]
 	AddBFieldDC[Amp_, D_] := If[Amp!=0 && FreeQ[D, _complex], (AppendTo[BFieldDC, {Amp, Normalize[D]}];), Print["Fail! Magnitude cannot be zero and the directional vector must be real!"]];
 	RemoveEasy[i_] := (EasyAxis = Delete[EasyAxis, i];)
 	RemoveHard[i_] := (HardAxis = Delete[HardAxis, i];)
+ 	RemoveBFieldDC[i_] := (BFieldDC = Delete[BFieldDC, i];)
 	
 	(* Display the system's params *)
 	DispParams[] := Module[{pair,vars,values},
