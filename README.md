@@ -97,7 +97,7 @@ Note that since we hasn't added any in-plane anisotrpy to break the symmetry, we
  ```
 FindGS[]
  ```
-<img src="./Demo/FindGS.png" alt="Alt Text" width="345" height="240">
+<img src="./Demo/FindGS.PNG" alt="Alt Text" width="345" height="240">
 
 
 
