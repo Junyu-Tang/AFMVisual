@@ -5,7 +5,6 @@ The usual workflow is as
 * Find equilibirum position of the magnetization (ground state)
 * Solve and visualize the eigenmodes (resonance mode)
 * Visualize the antiferromagnetic dynamcis with designed driving fields (e.g. SOT)
-<img src="./Demo/demo.png" alt="Alt Text" width="370" height="600">
 
 ## Installation
 
@@ -41,101 +40,103 @@ The following steps will walk through the contents in the ```Example.nb``` files
 
 * Load the package and print all available functions
   
-```
-Get["AFMVisualize`"] 
-?AFMVisualize`*
-```
+  ```
+  Get["AFMVisualize`"] 
+  ?AFMVisualize`*
+  ```
 
 * Add one easy axis along $z$ with amplitude=1 and one Zeenman field along $z$ with amplitude=10.
   Set the AFM exhcange strength to be 10.
-```
-AddBFieldDC[10, {0, 0, 1}]
-AddEasyAxis[1, {0, 0, 1}]
-SetExchange[10]
-```
+  ```
+  AddBFieldDC[10, {0, 0, 1}]
+  AddEasyAxis[1, {0, 0, 1}]
+  SetExchange[10]
+  ```
 
 * Display the current system's set up
 
-```
-DispConfg[]
-```
+  ```
+  DispConfg[]
+  ```
   This should return a Graphics3D plot and a table containing your input fields.
 
-<img src="./Demo/DispConf.png" alt="Alt Text" width="450" height="240">
+  <img src="./Demo/DispConf.png" alt="Alt Text" width="450" height="240">
 
-The table can be turned off (figures alone) by ```DispConfg[]```.
+  The table can be turned off (figures alone) by ```DispConfg[]```.
 
 * Note that the Zeeman field is large enough to render the syetem into spin flop phase.
 
-  To have a sense of the spin flop phase, we can envolve the system with $m_1=(1,0,0)$ and $m_2=(-1,0,0)$ with 10000 interations and 0.1 Gilbert damping. The time steps is set to 0.001, small enough to obtain the converged results.
+  To have a sense of the spin flop phase, we can envolve the system with $m_1=(1,0,0)$ and $m_2=(-1,0,0)$ with 10000 interations and 0.1 Gilbert damping. The time steps is set to 0.001, small enough to   obtain the converged results.
+  
+  ```
+  EvolveToEq[0.1, 0.001, 10000, {1, 0, 0}, {-1, 0, 0}]
+  ```
+  <img src="./Demo/EvolveToEq.png" alt="Alt Text" width="345" height="240">
 
-```
-EvolveToEq[0.1, 0.001, 10000, {1, 0, 0}, {-1, 0, 0}]
-```
-<img src="./Demo/EvolveToEq.png" alt="Alt Text" width="345" height="240">
-
-The magnetizations eventally evolve to a position with $\theta=1.05221$. The norm of the torques can also be found in the right table, which is close to zero for an equilibrium state. 
+  The magnetizations eventally evolve to a position with $\theta=1.05221$. The norm of the torques can also be found in the right table, which is close to zero for an equilibrium state. 
 
 * To find the energy minimum with initial guess $(\theta_1,\theta_2,\phi_1,\phi_2)=(\pi/2,\pi/2,0,\pi)$
   
-```
-FindEnergyMinima[Pi/2, Pi/2, 0, Pi]
-```
+  ```
+  FindEnergyMinima[Pi/2, Pi/2, 0, Pi]
+  ```
 
-Or we can try a diffrent initial guess $(\theta_1,\theta_2,\phi_1,\phi_2)=(0,\pi,0,\pi)$
+  Or we can try a diffrent initial guess $(\theta_1,\theta_2,\phi_1,\phi_2)=(0,\pi,0,\pi)$
 
-```
-FindEnergyMinima[0, Pi, 0, Pi]
-```
+  ```
+  FindEnergyMinima[0, Pi, 0, Pi]
+  ```
 
-Both should return the same minimum energy $E=-15.2632$ with $\theta_1=\theta_2=1.01653$.
+  Both should return the same minimum energy $E=-15.2632$ with $\theta_1=\theta_2=1.01653$.
 
-Note that since we hasn't added any in-plane anisotrpy to break the symmetry, we will get $\theta_1=\theta_2$ while the azimuthal angles could be arbitary as long as they differ by $\pi$, reflecting the rotation symmetry.
+  Note that since we hasn't added any in-plane anisotrpy to break the symmetry, we will get $\theta_1=\theta_2$ while the azimuthal angles could be arbitary as long as they differ by $\pi$, reflecting the rotation symmetry.
 
 * To find the true ground state
- ```
-FindGS[]
- ```
-<img src="./Demo/FindGSres.png" alt="Alt Text" width="400" height="250">
+* 
+   ```
+  FindGS[]
+   ```
+  <img src="./Demo/FindGSres.png" alt="Alt Text" width="400" height="250">
 
-Now we see that  $\theta_1=\theta_2=1.01653$ is indeed the ground state with almost vanishing torque $|\tau|$ at the order of $10^{-8}$.
+  Now we see that $\theta_1=\theta_2=1.01653$ is indeed the ground state with almost vanishing torque $|\tau|$ at the order of $10^{-8}$.
 
 * We can now linearize the LLF equation in the local frames of $m_1$ and $m_2$ at equilibrium position and visualize the Eigenmode of spin flop phase
 
-```
-PlotEigen[]
-```
-<img src="./Demo/PlotEigen.png" alt="Alt Text" width="400" height="250">  
+  ```
+  PlotEigen[]
+  ```
+  
+  <img src="./Demo/demo.png" alt="Alt Text" width="370" height="600">
 
 
 * To see the AFM resonance dynamcis, we first decrease the external zeeman field to 1
 
-```
-ResetAll[]
-AddBFieldDC[1, {0, 0, 1}]
-AddEasyAxis[1, {0, 0, 1}]
-SetExchange[10]
-```
+  ```
+  ResetAll[]
+  AddBFieldDC[1, {0, 0, 1}]
+  AddEasyAxis[1, {0, 0, 1}]
+  SetExchange[10]
+  ```
 
 * Now the ground state should be the AFM state with $\theta_1=\pi$ and $\theta_2=0$ or  $\theta_1=0$ and $\theta_2=\pi$.
 
-```
-FindGS[]
-```
-<img src="./Demo/FindGSres2.png" alt="Alt Text" width="400" height="250">
+  ```
+  FindGS[]
+  ```
+  <img src="./Demo/FindGSres2.png" alt="Alt Text" width="400" height="250">
 
-One can change the ```WorkingPrecsion``` and ```MaxIterations``` in the source code to make the numerical results closer to the ideal one.
+  One can change the ```WorkingPrecsion``` and ```MaxIterations``` in the source code to make the numerical results closer to the ideal one.
 
 * We can now add an in-plane AC harmonic Zeenman field that generates the field-like torque for AFMR
 
-```
-\[Omega]r = N[1 + Sqrt[1*(2*10 + 1)]]*\[Gamma];
-FL[t_] := 0.1*{Cos[\[Omega]r*t], Sin[\[Omega]r*t], 0};
-DL[t_] := {0, 0, 0};
-
-AFMDynamics[0.01, 0.01, 5000, FL, DL, {0, 0, 1}, {0, 0, -1}]
-```
-<img src="./Demo/AFMR.png" alt="Alt Text" width="330" height="400">
+  ```
+  \[Omega]r = N[1 + Sqrt[1*(2*10 + 1)]]*\[Gamma];
+  FL[t_] := 0.1*{Cos[\[Omega]r*t], Sin[\[Omega]r*t], 0};
+  DL[t_] := {0, 0, 0};
+  
+  AFMDynamics[0.01, 0.01, 5000, FL, DL, {0, 0, 1}, {0, 0, -1}]
+  ```
+  <img src="./Demo/AFMR.png" alt="Alt Text" width="330" height="400">
 
 ## Functions
 
