@@ -92,13 +92,12 @@ Find one energy minimum with starting position S1={Sin[theta10]]*Cos[Phi10], Sin
 * ```FindGS[switch_="on"]```
 
 Find the lowest energy minimum state for the system's current setup.  When switch is turned on (default value), it will return a Graphics3D object, showing the ground state configuration.
-When switch is turned off (for the input of other function), it will only returns a four-component vectors contains the angles of S1 and S2. This function will find the ground state with initial direction running over all the directions of easy axis and hard-axis planes (including Zeenman field). It's the user's responsibility to check whether this is the true ground state by examing where the energy has reached the lowest energy point and the torque are vanishing (will be shown when switch is turned on).
+When switch is turned off (for the input of other function), it will only returns a four-component vectors contains the angles of S1 and S2. This function will find the ground state with initial direction running over all the directions of easy axis and hard-axis planes (including Zeenman field). **It's the user's responsibility to check whether this is the true ground state by examing where the energy has reached the lowest energy point and whether the torque are vanishing (will be shown when switch is turned on).**
 
 
 * ```EvloveToEq[G_, dt_:0.001, tmax_:5000, m1i_, m2i_] ```
 
-Find the equilibirum position of the two sublattice magnetization by evolving the current system according to the LLG equation. To have a fast convengence and relable result, a large Gilber damping ```G``` and small time step ```dt``` (default: 0.001) should be used. The magnetization will be evolved with ```tmax``` times (default: 5000) with initial position given by two three-component vectors ```m1i``` and ```m2i```. It's the user's responsibility to check whether the outcome is consistent with the results from ```FindEnergyMinima``` or ```FindGS``` function.
-
+Find the equilibirum position of the two sublattice magnetization by evolving the current system according to the LLG equation. The partial differential equations are solved with simplified mid-point (implicit) method. **It's the user's responsibility to check the stability and check whether the outcome is consistent with the results from ```FindEnergyMinima``` or ```FindGS``` function.** To have a fast convengence and relable result, a large Gilber damping ```G``` and small time step ```dt``` (default: 0.001) should be used. The magnetization will be evolved with ```tmax``` times (default: 5000) with initial position given by two three-component vectors ```m1i``` and ```m2i```. 
 
 * ```PlotEigen[]```
 
