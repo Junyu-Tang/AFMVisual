@@ -116,6 +116,18 @@ FindGS[]
 ```
 <img src="./Demo/FindGSres2.png" alt="Alt Text" width="400" height="250">
 
+One can change the ```WorkingPrecsion``` and ```MaxIterations``` in the source code to make the numerical results closer to the ideal one.
+
+* We can now add an in-plane AC harmonic Zeenman field that generates the field-like torque for AFMR
+
+```
+\[Omega]r = N[1 + Sqrt[1*(2*10 + 1)]]*\[Gamma];
+FL[t_] := 0.1*{Cos[\[Omega]r*t], Sin[\[Omega]r*t], 0};
+DL[t_] := {0, 0, 0};
+
+AFMDynamics[0.01, 0.01, 5000, FL, DL, {0, 0, 1}, {0, 0, -1}]
+```
+<img src="./Demo/AFMR.png" alt="Alt Text" width="200" height="400">
 
 ## Functions
 
