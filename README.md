@@ -69,3 +69,22 @@ Remove ```i```-th Hard axis.
  * ``` RemoveBFieldDC[i_]```
 
 Remove ```i```-th DC Zeeman field.
+
+ * ``` DispConfig[]```
+
+Display the system's current configuration in a unit sphere
+
+
+ * ``` DispM[S1_,S2_]``` and ``` DispM[theta1_,theta2_,phi1,phi2]```
+
+Display the the two unitary magnetic moments with position specified by two vectors ```S1``` and ```S2``` or four angle variables ```theta1,theta2,phi1,phi2``` with ```theta``` for polar angle and ```phi``` for azmuthal angle.
+
+
+ * ``` AFMEnergy[S1_,S2_]```
+
+Returns the magentic enenrgy (arbitary unit, see convention part) when two magnetic moments are in the positions specified by the vectors ```S1``` and ```S2```.
+
+
+* ```FindEnergyMinima[theta10_, theta20_, Phi10_, Phi20_, switch_:"on"]```
+
+Find one energy minimum with starting position S1={Sin[theta10]]*Cos[Phi10], Sin[Theta10]*Sin[\Phi10], Cos[Theta10]}; S2={Sin[Theta20]*Cos[Phi2], Sin[Theta20]*Sin[Phi2], Cos[theta20]}. If switch=="off", a five-component vector will be return, containing the ground state energy, and four angles for the two magnetic moments at the energy minimum point. If switch=="on" (default values), the function will return a table for better visualization.
