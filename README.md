@@ -109,7 +109,7 @@ Find the equilibirum position of the two sublattice magnetization by evolving th
 
 Visualize the AFM dynamics for the current system's setup with driving field. The input are: Gilbert damping ```G```, time step ```dt```, maximum interation times ```tmax```, Field-like torques ```FL```, Antidamping-like torques ```DL```, initial position of the two sublattice magnetic moment ```m1i``` and ```m2i```. The input spin torques ```FL``` and ```DL``` should be a function that returns the spin polarization (three component vectors) at each time. It can be either a constant function or a time-dependent function defined by the user such as ```FL[t_]:={Cos[t],Sin[t],0}```.
 
-# Conventions
+## Conventions
 
 The angular gyromagnetic ratio is set to be $\gamma=0.176085963023$ THz*rad/T
 
