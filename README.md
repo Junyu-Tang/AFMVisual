@@ -59,8 +59,19 @@ SetExchange[10]
 ```
 DispConfg[]
 ```
-This should return a Graphics3D plot and a table containing your input fields. The table can be turned off (figures alone) by ```DispConfg[]```.
+This should return a Graphics3D plot and a table containing your input fields.
 
+<img src="./Demo/DispConf.png" alt="Alt Text" width="450" height="240">
+
+The table can be turned off (figures alone) by ```DispConfg[]```.
+
+* Note that the Zeeman field is large enough to render the syetem into spin flop phase.
+
+  To have a sense of the spin flop phase, we can envolve the system with $m_1=(1,0,0)$ and $m_2=(-1,0,0)$ with 10000 interations and 0.1 Gilbert damping. The time steps is set to 0.001, small enough to obtain the converged results.
+
+```
+EvolveToEq[0.1, 0.001, 10000, {1, 0, 0}, {-1, 0, 0}]
+```
 
 ## Functions
 
