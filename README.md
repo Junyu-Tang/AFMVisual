@@ -100,6 +100,22 @@ FindGS[]
 
 Now we see that  $\theta_1=\theta_2=1.01653$ is indeed the ground state with almost vanishing torque $|\tau|$ at the order of $10^{-8}$.
 
+* To see the AFM resonance dynamcis, we first decrease the external zeeman field to 1
+
+```
+ResetAll[]
+AddBFieldDC[1, {0, 0, 1}]
+AddEasyAxis[1, {0, 0, 1}]
+SetExchange[10]
+```
+
+* Now the ground state should be the AFM state with $\theta_1=\pi$ and $\theta_2=0$ or  $\theta_1=0$ and $\theta_2=\pi$.
+
+```
+FindGS[]
+```
+<img src="./Demo/FindGSres2.png" alt="Alt Text" width="400" height="250">
+
 
 ## Functions
 
