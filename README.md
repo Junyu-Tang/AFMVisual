@@ -43,19 +43,19 @@ Clear the inputs and reset all the parameters to their default values
 
 * ```SetExchange[J_]```
 
- Set the AFM exchange strength (arbitary unit, positive) BE=J. 
+ Set the AFM exchange strength (arbitary unit, positive) $B_E=J$. 
 
  * ``` AddEasyAxis[Amp_, Dir_]```
 
- Add one Easy axis to the system with magnitude BA=```Amp```(>0) in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector.
+ Add one Easy axis to the system with magnitude $B_A$=```Amp```(>0) in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector.
 
  * ``` AddHardAxis[Amp_, Dir_]```
 
-Add one Hard axis to the system with magnitude BH=```Amp```(<0) in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector.
+Add one Hard axis to the system with magnitude $B_H$=```Amp```(<0) in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector.
 
  * ``` AddBFieldDC[Amp_, Dir_]```
 
-Add one DC Zeeman field to the system with magnitude BH=```Amp``` in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector. For AC Zeeman field, it's treated as the driving force (see the Spin torque part).
+Add one DC Zeeman field to the system with magnitude $B_0$=```Amp``` in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector. For AC Zeeman field, it's treated as the driving force (see the Spin torque part).
 
  * ``` RemoveEasy[i_]```
 
@@ -105,8 +105,32 @@ Find the equilibirum position of the two sublattice magnetization by evolving th
  Plot the eigenmode (resonance mode) for the current system's setup. This function will first find the ground state of the system and then linearized the LLG equation without damping and driving fields around each subllattice magnetization's equilibrium position. It will return a ```manuplate``` plot that allows the user to finely tune the demonstration and visualize the magnetization dynamics.
 
 
- * ```AFMDynmaics[G_, dt_ ,tmax_, FL_ ,DL, m1i, m2i]```
+ * ```AFMDynmaics[G_, dt_ ,tmax_, FL_, DL_, m1i, m2i]```
 
 Visualize the AFM dynamics for the current system's setup with driving field. The input are: Gilbert damping ```G```, time step ```dt```, maximum interation times ```tmax```, Field-like torques ```FL```, Antidamping-like torques ```DL```, initial position of the two sublattice magnetic moment ```m1i``` and ```m2i```. The input spin torques ```FL``` and ```DL``` should be a function that returns the spin polarization (three component vectors) at each time. It can be either a constant function or a time-dependent function defined by the user such as ```FL[t_]:={Cos[t],Sin[t],0}```.
 
 # Conventions
+
+The angular gyromagnetic ratio is set to be $\gamma=0.176085963023$ THz*rad/T
+
+This means it's better for the users to intepretate their the effective fields to be in the Telsa unit [T] such that the times scale is ps (picosecond).
+
+For example, when the time step ```dt=0.01``` and the system has interation times ```tmax=1000```, with all fields in Telsa unit, this means that the system has evolved 0.01*1000 = 10 ps.
+
+The energy functional for the AFM system we adopt in this package is
+
+$E[m_1,m_2]= J m_1\cdot m_2 -K_a (m_1\cdot \hat{n}_a)^2 -K_a (m_2\cdot \hat{n}_a)^2 -K_h (m_1\cdot \hat{n}_h)^2 -K_h (m_2\cdot \hat{n}_h)^2 - H_0 (m_1+m_2)$
+
+Note that we have adopt the convention that the magnetic moment is a dimensionaless and unitary vectors so all the parameters in the above equation has energy unit.
+
+To simulate a system with magnetic moment $\hbar \gamma S$ with $S the quantum spin number$, one can obtain the effective field according $H^{eff}_i=-\partial E/\gamma\hbar S\partial m_i$.
+
+Therefore, we have the the following expressions for the effective fields of exchange interaction, anisotropy field and Zeeman field:
+
+$B^{ex}_1 = -B_E m_2\ \ \ B^{ex}_2 = -B_E m_1\ \ \ B_E=J/\hbar \gamma S >0$
+
+$B^{easy}_i = B_A*(m_1\cdot \hat{n}_a) \hat{n}_a,\ \ \ B_A=2K_a/\hbar\gamma S >0$
+
+$B^{hard}_i = B_H*(m_1\cdot \hat{n}_h) \hat{n}_h,\ \ \ B_H=2K_h/\hbar\gamma S <0$
+
+$B_0 = H_0/\hbar\gamma S$
