@@ -100,6 +100,14 @@ FindGS[]
 
 Now we see that  $\theta_1=\theta_2=1.01653$ is indeed the ground state with almost vanishing torque $|\tau|$ at the order of $10^{-8}$.
 
+* We can now linearize the LLF equation in the local frames of $m_1$ and $m_2$ at equilibrium position and visualize the Eigenmode of spin flop phase
+
+```
+PlotEigen[]
+```
+<img src="./Demo/PlotEigen.png" alt="Alt Text" width="400" height="250">  
+
+
 * To see the AFM resonance dynamcis, we first decrease the external zeeman field to 1
 
 ```
@@ -127,7 +135,7 @@ DL[t_] := {0, 0, 0};
 
 AFMDynamics[0.01, 0.01, 5000, FL, DL, {0, 0, 1}, {0, 0, -1}]
 ```
-<img src="./Demo/AFMR.png" alt="Alt Text" width="200" height="400">
+<img src="./Demo/AFMR.png" alt="Alt Text" width="330" height="400">
 
 ## Functions
 
