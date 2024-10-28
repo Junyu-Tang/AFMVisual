@@ -5,6 +5,7 @@ The usual workflow is as
 * Find equilibirum position of the magnetization (ground state)
 * Solve the eigenmodes (resonance mode)
 * Visualize the antiferromagnetic dynamcis
+<img src="./Demo/demo.png" alt="Alt Text" width="370" height="600">
 
 ## Installation
 
