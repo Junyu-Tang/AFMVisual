@@ -88,3 +88,13 @@ Returns the magentic enenrgy (arbitary unit, see convention part) when two magne
 * ```FindEnergyMinima[theta10_, theta20_, Phi10_, Phi20_, switch_:"on"]```
 
 Find one energy minimum with starting position S1={Sin[theta10]]*Cos[Phi10], Sin[Theta10]*Sin[\Phi10], Cos[Theta10]}; S2={Sin[Theta20]*Cos[Phi2], Sin[Theta20]*Sin[Phi2], Cos[theta20]}. If switch=="off", a five-component vector will be return, containing the ground state energy, and four angles for the two magnetic moments at the energy minimum point. If switch=="on" (default values), the function will return a table for better visualization.
+
+* ```FindGS[switch_="on"]```
+
+Find the lowest energy minimum state for the system's current setup.  When switch is turned on (default value), it will return a Graphics3D object, showing the ground state configuration.
+When switch is turned off (for the input of other function), it will only returns a four-component vectors contains the angles of S1 and S2. This function will find the ground state with initial direction running over all the directions of easy axis and hard-axis planes (including Zeenman field). It's the user's responsibility to check whether this is the true ground state by examing where the energy has reached the lowest energy point and the torque are vanishing (will be shown when switch is turned on).
+
+
+* ```EvloveToEq[G_, dt_:0.001, tmax_:5000, m1i_, m2i_] ```
+
+Find the equilibirum position of the two sublattice magnetization by evolving the current system according to the LLG equation. To have a fast convengence and relable result, a large Gilber damping ```G``` and small time step ```dt``` (default: 0.001) should be used. The magnetization will be evolved with ```tmax``` times (default: 5000) with initial position given by two three-component vectors ```m1i``` and ```m2i```. It's the user's responsibility to check whether the outcome is consistent with the results from ```FindEnergyMinima``` or ```FindGS``` function.
