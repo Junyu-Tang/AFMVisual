@@ -86,9 +86,9 @@ Display the the two unitary magnetic moments with position specified by two vect
 Returns the magentic enenrgy (arbitary unit, see convention part) when two magnetic moments are in the positions specified by the vectors ```S1``` and ```S2```.
 
 
-* ```FindEnergyMinima[theta10_, theta20_, Phi10_, Phi20_, switch_:"on"]```
+* ```FindEnergyMinima[t1_, t2_, p1_, p2_, switch_:"on"]```
 
-Find one energy minimum with starting position S1={Sin[theta10]]*Cos[Phi10], Sin[Theta10]*Sin[\Phi10], Cos[Theta10]}; S2={Sin[Theta20]*Cos[Phi2], Sin[Theta20]*Sin[Phi2], Cos[theta20]}. If switch=="off", a five-component vector will be return, containing the ground state energy, and four angles for the two magnetic moments at the energy minimum point. If switch=="on" (default values), the function will return a table for better visualization.
+Find one energy minimum with starting position S1={Sin[t1]]*Cos[P1], Sin[t1]*Sin[p1], Cos[t1]}; S2={Sin[t2]*Cos[p2], Sin[t2]*Sin[p2], Cos[t2]}. If switch=="off", a five-component vector will be return, containing the ground state energy, and four angles for the two magnetic moments at the energy minimum point. If switch=="on" (default values), the function will return a table for better visualization.
 
 * ```FindGS[switch_="on"]```
 
