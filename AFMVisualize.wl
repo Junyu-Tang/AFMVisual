@@ -266,7 +266,7 @@ End[]
 
 (* Ending infos*)
 Print["AFMVisualize loaded successfully." <> " Version: " <> AFMVersion];
-Print["Developed by Junyu Tang (UCR)."]
+Print["Developed by Junyu Tang (UCR). Licensed under the MIT License."]
 Print["Type ?AFMVisualize`* to see all vriables and available functions."];
 Print["For more infos, visit: https://github.com/Rh0-aias/AFMVisualize"];
 
