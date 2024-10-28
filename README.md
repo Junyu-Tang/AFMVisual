@@ -102,7 +102,7 @@ Find the equilibirum position of the two sublattice magnetization by evolving th
 
 * ```PlotEigen[]```
 
- Plot the eigenmode (resonance mode) for the current system's setup. This function will first find the ground state of the system and then linearized the LLG equation without damping and driving fields around each subllattice magnetization's equilibrium position. It will return a ```manuplate``` plot that allows the user to finely tune the demonstration and visualize the magnetization dynamics.
+ Plot the eigenmode (resonance mode) for the current system's setup. This function will first find the ground state of the system and then linearize the LLG equation without damping and driving fields around each subllattice magnetization's equilibrium position. It will return a ```manuplate``` plot that allows the user to finely tune the demonstration and visualize the magnetization dynamics.
 
 
  * ```AFMDynmaics[G_, dt_ ,tmax_, FL_, DL_, m1i, m2i]```
