@@ -134,3 +134,7 @@ $B^{easy}_i = B_A*(m_i\cdot \hat{n}_a) \hat{n}_a,\ \ \ B_A=2K_a/\hbar\gamma S >0
 $B^{hard}_i = B_H*(m_i\cdot \hat{n}_h) \hat{n}_h,\ \ \ B_H=2K_h/\hbar\gamma S <0$
 
 $B_0 = H_0/\hbar\gamma S$
+
+# Update
+
+* Version-1.0 2024/10/28 
