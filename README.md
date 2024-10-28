@@ -30,7 +30,7 @@ After the package is sucessfully loaded, type ```?AFMVisualize`* ``` to see all 
 
 ## Examples
 
-The files ```Example.nb``` contains serveral basic instance regarding how to use this package.
+The files ```Examples.nb``` contains serveral basic instance regarding how to use this package.
 
 See the **Convention** section at the end of this page for how the parameters are defined.
 
