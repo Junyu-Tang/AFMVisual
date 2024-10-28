@@ -3,8 +3,8 @@ A Mathematica Paclet that allows for visualzation of two-sublattice antiferromag
 The usual workflow is as
 * Set up the system's magnetic params
 * Find equilibirum position of the magnetization (ground state)
-* Solve the eigenmodes (resonance mode)
-* Visualize the antiferromagnetic dynamcis
+* Solve and visualize the eigenmodes (resonance mode)
+* Visualize the antiferromagnetic dynamcis with designed driving fields (e.g. SOT)
 <img src="./Demo/demo.png" alt="Alt Text" width="370" height="600">
 
 ## Installation
