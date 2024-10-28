@@ -9,7 +9,7 @@ The usual workflow is as
 
 ## Installation
 
-Download and put the AFMVisualize.wl file in the following path
+Download and put the ```AFMVisualize.wl``` file in the following path
 ```
 Mathematica\Contents\AddOns\ExtracPackages
 ```
