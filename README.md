@@ -88,7 +88,7 @@ Returns the magentic enenrgy (arbitary unit, see convention part) when two magne
 
 * ```FindEnergyMinima[t1_, t2_, p1_, p2_, switch_:"on"]```
 
-Find one energy minimum with starting position S1={Sin[t1]]*Cos[P1], Sin[t1]*Sin[p1], Cos[t1]}; S2={Sin[t2]*Cos[p2], Sin[t2]*Sin[p2], Cos[t2]}. If switch=="off", a five-component vector will be return, containing the ground state energy, and four angles for the two magnetic moments at the energy minimum point. If switch=="on" (default values), the function will return a table for better visualization.
+Find one energy minimum with initial guess for the position of two magnetic moment S1={Sin[t1]]*Cos[p1], Sin[t1]*Sin[p1], Cos[t1]}; S2={Sin[t2]*Cos[p2], Sin[t2]*Sin[p2], Cos[t2]}. If switch=="off", a five-component vector will be return, containing the ground state energy, and four angles for the two magnetic moments at the energy minimum point. If switch=="on" (default values), the function will return group the results into a table for better visualization.
 
 * ```FindGS[switch_="on"]```
 
