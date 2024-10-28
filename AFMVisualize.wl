@@ -46,7 +46,7 @@ BeginPackage["AFMVisualize`"]
 
 Begin["`Private`"]
 	ResetAll[] := (EasyAxis = {}; HardAxis = {}; BFieldDC = {}; BE=1;)
-	SetExchange[J_] := If[J>0 && FreeQ[J, _complex], (BE=J;), Print["Fail! Exchange strength ust be real and positive for AFM!"]];
+	SetExchange[J_] := If[J>0 && FreeQ[J, _complex], (BE=J;), Print["Fail! Exchange strength must be real and positive for AFM!"]];
 	AddEasyAxis[Amp_, D_] := If[Amp>0 && FreeQ[D, _complex], (AppendTo[EasyAxis, {Amp, Normalize[D]}];), Print["Fail! For easy axis, magnitude must be positive and directional vector must be real!"]];
 	AddHardAxis[Amp_, D_] := If[Amp<0 && FreeQ[D, _complex], (AppendTo[HardAxis, {Amp, Normalize[D]}];), Print["Fail! For hard axis, magnitude must be negative and directional vector must be real!"]];
 	AddBFieldDC[Amp_, D_] := If[Amp!=0 && FreeQ[D, _complex], (AppendTo[BFieldDC, {Amp, Normalize[D]}];), Print["Fail! Magnitude cannot be zero and the directional vector must be real!"]];
