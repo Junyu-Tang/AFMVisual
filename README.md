@@ -74,7 +74,7 @@ EvolveToEq[0.1, 0.001, 10000, {1, 0, 0}, {-1, 0, 0}]
 ```
 <img src="./Demo/EvolveToEq.png" alt="Alt Text" width="345" height="240">
 
-The norm of the torques can also be found in the right table, which is close to zero for an equilibrium state. 
+The magnetizations eventally evolve to a position with $\theta=1.05221$. The norm of the torques can also be found in the right table, which is close to zero for an equilibrium state. 
 
 * To find the energy minimum with initial guess $(\theta_1,\theta_2,\phi_1,\phi_2)=(\pi/2,\pi/2,0,\pi)$
   
@@ -93,12 +93,12 @@ Both should return the same minimum energy $E=-15.2632$ with $\theta_1=\theta_2=
 Note that since we hasn't added any in-plane anisotrpy to break the symmetry, we will get $\theta_1=\theta_2$ while the azimuthal angles could be arbitary as long as they differ by $\pi$, reflecting the rotation symmetry.
 
 * To find the true ground state
-* 
  ```
 FindGS[]
  ```
-<img src="./Demo/FindGS.PNG" alt="Alt Text" width="345" height="240">
+<img src="./Demo/FindGSres.png" alt="Alt Text" width="400" height="250">
 
+Now we see that  $\theta_1=\theta_2=1.01653$ is indeed the ground state with almost vanishing torque $|\tau|$ at the order of $10^{-8}$.
 
 
 ## Functions
