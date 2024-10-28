@@ -37,7 +37,7 @@ See the convention part at the end of this page for how the parameters and their
 
 * ```ResetAll[]```
   
-Clear the inputs and reset all the parameters to their default values
+Clear the inputs and reset all the parameters to their default values.
 
 * ```SetExchange[J_]```
 
