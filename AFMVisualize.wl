@@ -122,7 +122,7 @@ Begin["`Private`"]
 				];
 	
 	(* Find equilibrium position by evolving M with large damping *)
-	EvolveToEq[\[Alpha]G_, \[Delta]t_:0.001, tmax_, m1i_, m2i_] := Module[{Btot, mag, BFields, AFields, HFields, Bgplot, Mplot, trace, \[Tau]1, \[Tau]2, vars, vals, pair, info},
+	EvolveToEq[\[Alpha]G_, \[Delta]t_:0.001, tmax_:5000, m1i_, m2i_] := Module[{Btot, mag, BFields, AFields, HFields, Bgplot, Mplot, trace, \[Tau]1, \[Tau]2, vars, vals, pair, info},
 						mag={{Normalize[m1i], Normalize[m2i]}};
 						If[Length[BFieldDC]>0, Btot=Sum[BFieldDC[[i,1]]*BFieldDC[[i,2]],{i,1,Length[BFieldDC]}], Btot={0,0,0}];
 						Do[AppendTo[mag, LLGSolver[mag[[j-1,1]], mag[[j-1,2]], Btot, {0,0,0}, BE, \[Alpha]G, \[Delta]t]], {j,2,tmax}];
