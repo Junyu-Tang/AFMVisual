@@ -29,9 +29,38 @@ which is equivalent with
 ```
 After the package is sucessfully loaded, type ```?AFMVisualize`* ``` to see all variables and available functions.
 
+## Examples
+
 The files ```Example.nb``` contains serveral basic instance regarding how to use this package.
 
-See the convention part at the end of this page for how the parameters and their units are defined.
+See the **Convention** section at the end of this page for how the parameters are defined.
+
+For the explanation of each available function, see the **Functions** section (next section).
+
+The following steps will walk through the contents in the ```Example.nb``` files.
+
+* Load the package and print all available functions
+  
+```
+Get["AFMVisualize`"] 
+?AFMVisualize`*
+```
+
+* Add one easy axis along $z$ with amplitude=1 and one Zeenman field along $z$ with amplitude=10.
+  Set the AFM exhcange strength to be 10.
+```
+AddBFieldDC[10, {0, 0, 1}]
+AddEasyAxis[1, {0, 0, 1}]
+SetExchange[10]
+```
+
+* Display the current system's set up
+
+```
+DispConfg[]
+```
+This should return a Graphics3D plot and a table containing your input fields. The table can be turned off (figures alone) by ```DispConfg[]```.
+
 
 ## Functions
 
@@ -132,6 +161,6 @@ $B^{hard}_i = B_H*(m_i\cdot \hat{n}_h) \hat{n}_h,\ \ \ B_H=2K_h/\hbar\gamma S <0
 
 $B_0 = H_0/\hbar\gamma S$
 
-# Update
+## Update
 
 * Version-1.0 2024/10/28 
