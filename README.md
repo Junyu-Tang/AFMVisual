@@ -1,6 +1,6 @@
 # AFMVisualize
 A Mathematica Paclet that allows for visualzation of two-sublattice antiferromagnetic dynamics with arbitary input, including Easy-axis anisotropy fields, hard-axis anisotropy fields, Zeeman fields, spin torques (time-dependent or indepedent Field-like torques and Antidamping-like torques).
-The usual Workflow is as
+The usual workflow is as
 * Set up the system's magnetic params
 * Find equilibirum position of the magnetization (ground state)
 * Solve the eigenmodes (resonance mode)
@@ -98,3 +98,15 @@ When switch is turned off (for the input of other function), it will only return
 * ```EvloveToEq[G_, dt_:0.001, tmax_:5000, m1i_, m2i_] ```
 
 Find the equilibirum position of the two sublattice magnetization by evolving the current system according to the LLG equation. To have a fast convengence and relable result, a large Gilber damping ```G``` and small time step ```dt``` (default: 0.001) should be used. The magnetization will be evolved with ```tmax``` times (default: 5000) with initial position given by two three-component vectors ```m1i``` and ```m2i```. It's the user's responsibility to check whether the outcome is consistent with the results from ```FindEnergyMinima``` or ```FindGS``` function.
+
+
+* ```PlotEigen[]```
+
+ Plot the eigenmode (resonance mode) for the current system's setup. This function will first find the ground state of the system and then linearized the LLG equation without damping and driving fields around each subllattice magnetization's equilibrium position. It will return a ```manuplate``` plot that allows the user to finely tune the demonstration and visualize the magnetization dynamics.
+
+
+ * ```AFMDynmaics[G_, dt_ ,tmax_, FL_ ,DL, m1i, m2i]```
+
+Visualize the AFM dynamics for the current system's setup with driving field. The input are: Gilbert damping ```G```, time step ```dt```, maximum interation times ```tmax```, Field-like torques ```FL```, Antidamping-like torques ```DL```, initial position of the two sublattice magnetic moment ```m1i``` and ```m2i```. The input spin torques ```FL``` and ```DL``` should be a function that returns the spin polarization (three component vectors) at each time. It can be either a constant function or a time-dependent function defined by the user such as ```FL[t_]:={Cos[t],Sin[t],0}```.
+
+# Conventions
