@@ -30,7 +30,7 @@ which is equivalent with
 After the package is sucessfully loaded, type ```?AFMVisualize`* ``` to see all variables and available functions.
 
 
-## Tutorial
+## Functions
 
 The files ```Example.nb``` contains serveral basic instance regarding how to use this package.
 
