@@ -29,14 +29,11 @@ which is equivalent with
 ```
 After the package is sucessfully loaded, type ```?AFMVisualize`* ``` to see all variables and available functions.
 
-
-## Functions
-
 The files ```Example.nb``` contains serveral basic instance regarding how to use this package.
 
 See the convention part at the end of this page for how the parameters and their units are defined.
 
-Available functions are:
+## Functions
 
 * ```ResetAll[]```
   
