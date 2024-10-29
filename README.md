@@ -1,5 +1,5 @@
 # AFMVisualize
-A Mathematica Paclet that allows for visualzation of two-sublattice antiferromagnetic dynamics with arbitary input, including Easy-axis anisotropy fields, hard-axis anisotropy fields, Zeeman fields, spin torques (time-dependent or indepedent Field-like torques and Antidamping-like torques).
+A Mathematica Paclet that allows for visualization of two-sublattice antiferromagnetic dynamics with arbitary input, including Easy-axis anisotropy fields, hard-axis anisotropy fields, Zeeman fields, spin torques (time-dependent or indepedent Field-like torques and Antidamping-like torques).
 The usual workflow is as
 * Set up the system's magnetic params
 * Find equilibirum position of the magnetization (ground state)
