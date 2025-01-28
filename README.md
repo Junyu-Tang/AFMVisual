@@ -45,7 +45,7 @@ The following steps will walk through the contents in the ```Example.nb``` files
   ?AFMVisualize`*
   ```
 
-* Add one easy axis along $z$ with amplitude=1 and one Zeenman field along $z$ with amplitude=10.
+* Add one easy axis along z={0,0,1} with amplitude=1 and one Zeenman field along z={0,0,1} with amplitude=10.<br/>
   Set the AFM exhcange strength to be 10.
   ```
   AddBFieldDC[10, {0, 0, 1}]
@@ -230,13 +230,13 @@ For example, when the time step ```dt=0.01``` and the system has interation time
 
 The energy functional for the AFM system we adopt in this package is
 
-$E[m_1,m_2]= J m_1\cdot m_2 -K_a (m_1\cdot \hat{n}_a)^2 -K_a (m_2\cdot \hat{n}_a)^2 -K_h (m_1\cdot \hat{n}_h)^2 -K_h (m_2\cdot \hat{n}_h)^2 - H_0 (m_1+m_2)$
+$E[m_1,m_2]= J m_1\cdot m_2 -K_a (m_1\cdot \hat{n}_a)^2 -K_a (m_2\cdot \hat{n}_a)^2 -K_h (m_1\cdot \hat{n}_h)^2 -K_h (m_2\cdot \hat{n}_h)^2 - H_0 (m_1+m_2) + D\cdot (m_1 \times m_2)$
 
-Note that we have adopt the convention that the magnetic moment is a dimensionaless and unitary vectors so all the parameters in the above equation has energy unit.
+Note that we have adopt the convention that the magnetic moment is a **dimensionaless** and **unitary** vectors so all the parameters in the above equation has **energy** unit.
 
 To simulate a system with magnetic moment $\hbar \gamma S$ with $S$ the quantum spin number, one can obtain the effective field in the unit of Tesla according to $H^{eff}_i=-\partial E/\gamma\hbar S\partial m_i$.
 
-Therefore, we have the the following expressions for the effective fields of exchange interaction, anisotropy field and Zeeman field:
+Therefore, we have the the following expressions for the effective fields of exchange interaction, anisotropy field, Zeeman field and DMI fields:
 
 $B^{ex}_1 = -B_E m_2\ \ \ B^{ex}_2 = -B_E m_1\ \ \ B_E=J/\hbar \gamma S >0$
 
@@ -245,6 +245,17 @@ $B^{easy}_i = B_A*(m_i\cdot \hat{n}_a) \hat{n}_a,\ \ \ B_A=2K_a/\hbar\gamma S >0
 $B^{hard}_i = B_H*(m_i\cdot \hat{n}_h) \hat{n}_h,\ \ \ B_H=2K_h/\hbar\gamma S <0$
 
 $B_0 = H_0/\hbar\gamma S$
+
+$D_1 = -m_2\times D',\ \ \ D_2 = -D'\times m_1$ with $D'=D/\hbar\gamma S$
+
+The values added in the functions ```SetExchange[], AddEasyAxis[], AddHardAxis[], AddBFieldDC[], AddDMI[]``` should be interpretated as <br/>
+
+$B_E, B_A, B_h, B_0, D'$ respectively.
+
+As we mentioned, All the parameters $J,K_a,K_h,H_0,D$ are in energy unit. 
+
+So the input parameters $B_E, B_A, B_h, B_0, D'$ are all in Tesla [T] unit.
+
 
 ## Update
 
