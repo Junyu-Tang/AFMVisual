@@ -252,7 +252,7 @@ The amplitude added in the functions ```SetExchange[], AddEasyAxis[], AddHardAxi
 
 $B_E, B_A, B_h, B_0, D'$ respectively.
 
-As we mentioned, All the parameters $J,K_a,K_h,H_0,D$ are in energy unit. 
+As we have mentioned, all the parameters $J,K_a,K_h,H_0,D$ are in energy unit. 
 
 So the input parameters $B_E, B_A, B_h, B_0, D'$ are all in Tesla [T] unit.
 
