@@ -142,79 +142,79 @@ The following steps will walk through the contents in the ```Example.nb``` files
 
 * ```ResetAll[]```
   
-Clear the inputs and reset all the parameters to their default values.
-
+Clear the inputs and reset all the parameters to their default values. 
+<br/><br/>
 
 * ```SetExchange[J_]```
 
  Set the AFM exchange strength (arbitary unit, positive) $B_E=J$. 
- 
+ <br/><br/>
 
  * ``` AddEasyAxis[Amp_, Dir_]```
 
  Add one Easy axis to the system with magnitude $B_A$=```Amp```(>0) in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector.
- 
+ <br/><br/>
 
  * ``` AddHardAxis[Amp_, Dir_]```
 
 Add one Hard axis to the system with magnitude $B_H$=```Amp```(<0) in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector.
-
+<br/><br/>
 
  * ``` AddBFieldDC[Amp_, Dir_]```
 
 Add one DC Zeeman field to the system with magnitude $B_0$=```Amp``` in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector. For AC Zeeman field, it's treated as the driving force (see the Spin torque part).
-
+<br/><br/>
 
  * ``` RemoveEasy[i_]```
 
 Remove ```i```-th Easy axis.
-
+<br/><br/>
   
  * ``` RemoveHard[i_]```
 
 Remove ```i```-th Hard axis.
-
+<br/><br/>
 
  * ``` RemoveBFieldDC[i_]```
 
 Remove ```i```-th DC Zeeman field.
-
+<br/><br/>
 
  * ``` DispConfig[]```
 
 Display the system's current configuration in a unit sphere.
-
+<br/><br/>
 
  * ``` DispM[S1_,S2_]``` and ``` DispM[theta1_,theta2_,phi1,phi2]```
 
 Display the the two unitary magnetic moments with position specified by two vectors ```S1``` and ```S2``` or four angle variables ```theta1,theta2,phi1,phi2``` with ```theta``` for polar angle and ```phi``` for azmuthal angle.
-
+<br/><br/>
 
  * ``` AFMEnergy[S1_,S2_]```
 
 Returns the magentic enenrgy (arbitary unit, see convention part) when two magnetic moments are in the positions specified by the vectors ```S1``` and ```S2```.
-
+<br/><br/>
 
 * ```FindEnergyMinima[t1_, t2_, p1_, p2_, switch_:"on"]```
 
 Find one energy minimum with initial guess for the position of two magnetic moment S1={Sin[t1]]*Cos[p1], Sin[t1]*Sin[p1], Cos[t1]}; S2={Sin[t2]*Cos[p2], Sin[t2]*Sin[p2], Cos[t2]}. If switch=="off", a five-component vector will be return, containing the ground state energy, and four angles for the two magnetic moments at the energy minimum point. If switch=="on" (default values), the function will return group the results into a table for better visualization.
-
+<br/><br/>
 
 * ```FindGS[switch_="on"]```
 
 Find the lowest energy minimum state for the system's current setup.  When switch is turned on (default value), it will return a Graphics3D object, showing the ground state configuration.
 When switch is turned off (for the input of other function), it will only returns a four-component vectors contains the angles of S1 and S2. This function will find the ground state with initial direction running over all the directions of easy axis and hard-axis planes (including Zeenman field). **It's the user's responsibility to check whether this is the true ground state by examing where the energy has reached the lowest energy point and whether the torque are vanishing (will be shown when switch is turned on).**
-
+<br/><br/>
 
 * ```EvloveToEq[G_, dt_:0.001, tmax_:5000, m1i_, m2i_] ```
 
 Find the equilibirum position of the two sublattice magnetization by evolving the current system according to the LLG equation. The partial differential equations are solved with simplified mid-point (implicit) method. **It's the user's responsibility to check the stability and check whether the outcome is consistent with the results from ```FindEnergyMinima``` or ```FindGS``` function.** To have a fast convengence and relable result, a large Gilber damping ```G``` and small time step ```dt``` (default: 0.001) should be used. The magnetization will be evolved with ```tmax``` times (default: 5000) with initial position given by two three-component vectors ```m1i``` and ```m2i```. 
-
+<br/><br/>
 
 * ```PlotEigen[]```
 
  Plot the eigenmode (resonance mode) for the current system's setup. This function will first find the ground state of the system and then linearize the LLG equation without damping and driving fields around each subllattice magnetization's equilibrium position. It will return a ```manuplate``` plot that allows the user to finely tune the demonstration and visualize the magnetization dynamics.
-
+<br/><br/>
 
  * ```AFMDynmaics[G_, dt_ ,tmax_, FL_, DL_, m1i, m2i]```
 
