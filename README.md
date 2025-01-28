@@ -144,25 +144,31 @@ The following steps will walk through the contents in the ```Example.nb``` files
   
 Clear the inputs and reset all the parameters to their default values.
 
+
 * ```SetExchange[J_]```
 
  Set the AFM exchange strength (arbitary unit, positive) $B_E=J$. 
+ 
 
  * ``` AddEasyAxis[Amp_, Dir_]```
 
  Add one Easy axis to the system with magnitude $B_A$=```Amp```(>0) in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector.
+ 
 
  * ``` AddHardAxis[Amp_, Dir_]```
 
 Add one Hard axis to the system with magnitude $B_H$=```Amp```(<0) in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector.
 
+
  * ``` AddBFieldDC[Amp_, Dir_]```
 
 Add one DC Zeeman field to the system with magnitude $B_0$=```Amp``` in the direction given by ```Dir```. The function will automatically normalize the ```Dir``` vector. For AC Zeeman field, it's treated as the driving force (see the Spin torque part).
 
+
  * ``` RemoveEasy[i_]```
 
 Remove ```i```-th Easy axis.
+
   
  * ``` RemoveHard[i_]```
 
@@ -173,9 +179,10 @@ Remove ```i```-th Hard axis.
 
 Remove ```i```-th DC Zeeman field.
 
+
  * ``` DispConfig[]```
 
-Display the system's current configuration in a unit sphere
+Display the system's current configuration in a unit sphere.
 
 
  * ``` DispM[S1_,S2_]``` and ``` DispM[theta1_,theta2_,phi1,phi2]```
@@ -192,6 +199,7 @@ Returns the magentic enenrgy (arbitary unit, see convention part) when two magne
 
 Find one energy minimum with initial guess for the position of two magnetic moment S1={Sin[t1]]*Cos[p1], Sin[t1]*Sin[p1], Cos[t1]}; S2={Sin[t2]*Cos[p2], Sin[t2]*Sin[p2], Cos[t2]}. If switch=="off", a five-component vector will be return, containing the ground state energy, and four angles for the two magnetic moments at the energy minimum point. If switch=="on" (default values), the function will return group the results into a table for better visualization.
 
+
 * ```FindGS[switch_="on"]```
 
 Find the lowest energy minimum state for the system's current setup.  When switch is turned on (default value), it will return a Graphics3D object, showing the ground state configuration.
@@ -201,6 +209,7 @@ When switch is turned off (for the input of other function), it will only return
 * ```EvloveToEq[G_, dt_:0.001, tmax_:5000, m1i_, m2i_] ```
 
 Find the equilibirum position of the two sublattice magnetization by evolving the current system according to the LLG equation. The partial differential equations are solved with simplified mid-point (implicit) method. **It's the user's responsibility to check the stability and check whether the outcome is consistent with the results from ```FindEnergyMinima``` or ```FindGS``` function.** To have a fast convengence and relable result, a large Gilber damping ```G``` and small time step ```dt``` (default: 0.001) should be used. The magnetization will be evolved with ```tmax``` times (default: 5000) with initial position given by two three-component vectors ```m1i``` and ```m2i```. 
+
 
 * ```PlotEigen[]```
 
