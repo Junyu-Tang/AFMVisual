@@ -248,7 +248,7 @@ $B_0 = H_0/\hbar\gamma S$
 
 $D_1 = -m_2\times D',\ \ \ D_2 = -D'\times m_1$ with $D'=D/\hbar\gamma S$
 
-The values added in the functions ```SetExchange[], AddEasyAxis[], AddHardAxis[], AddBFieldDC[], AddDMI[]``` should be interpretated as <br/>
+The amplitude added in the functions ```SetExchange[], AddEasyAxis[], AddHardAxis[], AddBFieldDC[], AddDMI[]``` should be interpretated as <br/>
 
 $B_E, B_A, B_h, B_0, D'$ respectively.
 
