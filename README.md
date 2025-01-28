@@ -185,7 +185,7 @@ Remove ```i```-th DC Zeeman field.
 Display the system's current configuration in a unit sphere.
 <br/><br/>
 
- * ``` DispM[S1_,S2_]``` and ``` DispM[theta1_,theta2_,phi1,phi2]```
+ * ``` DispM[S1_,S2_]``` and ``` DispM[theta1_,theta2_,phi1_,phi2_]```
 
 Display the the two unitary magnetic moments with position specified by two vectors ```S1``` and ```S2``` or four angle variables ```theta1,theta2,phi1,phi2``` with ```theta``` for polar angle and ```phi``` for azmuthal angle.
 <br/><br/>
