@@ -256,5 +256,11 @@ So the input parameters $B_E, B_A, B_h, B_0, D'$ are all in Tesla [T] unit.
 
 
 ## Update
+* Version-2.0 2025/01/28
+  
+  Some bugs haven been fixed. Now, AFMVisualize supports Dzyaloshinskii–Moriya interaction (DMI)!
 
-* Version-1.0 2024/10/28 
+
+* Version-1.0 2024/10/28
+  
+  First version of AFMVisualize!
