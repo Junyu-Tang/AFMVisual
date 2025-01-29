@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-BeginPackage["AFMVisualize`"]
+BeginPackage["AFMVisual`"]
 	(* 
 	   Conventions:
 	   dm/dt =-\[Gamma] m\[Cross]H + \[Alpha] m x dm/dt
@@ -291,9 +291,9 @@ Begin["`Private`"]
 End[] 
 
 (* Ending infos*)
-Print["AFMVisualize loaded successfully." <> " Version: " <> AFMVersion];
+Print["AFMVisual loaded successfully." <> " Version: " <> AFMVersion];
 Print["Developed by Junyu Tang (UCR). Licensed under MIT License."]
-Print["Type ?AFMVisualize`* to see all vriables and available functions."];
-Print["For more infos, visit: https://github.com/Rh0-aias/AFMVisualize"];
+Print["Type ?AFMVisual`* to see all vriables and available functions."];
+Print["For more infos, visit: https://github.com/Rh0-aias/AFMVisual"];
 
 EndPackage[]
