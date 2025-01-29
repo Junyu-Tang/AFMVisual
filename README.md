@@ -1,4 +1,4 @@
-# AFMVisualize
+# AFMVisual
 A Mathematica Paclet that allows for visualization of two-sublattice antiferromagnetic dynamics with arbitary input, including Easy-axis anisotropy fields, hard-axis anisotropy fields, Zeeman fields, DMI (new feature!), spin torques (time-dependent or indepedent Field-like torques and Antidamping-like torques).
 The usual workflow is as
 * Set up the system's magnetic params
@@ -8,7 +8,7 @@ The usual workflow is as
 
 ## Installation
 
-Download and put the ```AFMVisualize.wl``` file in the following path
+Download and put the ```AFMVisual.wl``` file in the following path
 ```
 Mathematica\Contents\AddOns\ExtracPackages
 ```
@@ -16,17 +16,17 @@ or somewhere your Mathematica could find ($Path).
 
 To load the package:
 ```
-Needs["AFMVisualize`"]
+Needs["AFMVisual`"]
 ```
 The following command will reload the package (overwite the variables) every time being called
 
-```Get["AFMVisualize`"] ```
+```Get["AFMVisual`"] ```
 
 which is equivalent with
 ```
-<<"AFMVisualize`"
+<<"AFMVisual`"
 ```
-After the package is sucessfully loaded, type ```?AFMVisualize`* ``` to see all variables and available functions.
+After the package is sucessfully loaded, type ```?AFMVisual`* ``` to see all variables and available functions.
 
 ## Examples
 
@@ -41,8 +41,8 @@ The following steps will walk through the contents in the ```Example.nb``` files
 * Load the package and print all available functions
   
   ```
-  Get["AFMVisualize`"] 
-  ?AFMVisualize`*
+  Get["AFMVisual`"] 
+  ?AFMVisual`*
   ```
 
 * Add one easy axis along z={0,0,1} with amplitude=1 and one Zeenman field along z={0,0,1} with amplitude=10.<br/>
@@ -258,9 +258,9 @@ So the input parameters $B_E, B_A, B_h, B_0, D'$ are all in Tesla [T] unit.
 ## Update
 * Version-2.0 2025/01/28
   
-  Some bugs haven been fixed. Now, AFMVisualize supports Dzyaloshinskii–Moriya interaction (DMI)!
+  Some bugs haven been fixed. Now, AFMVisual supports Dzyaloshinskii–Moriya interaction (DMI)!
 
 
 * Version-1.0 2024/10/28
   
-  First version of AFMVisualize!
+  First version of AFMVisual!
