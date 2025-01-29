@@ -4,25 +4,29 @@ BeginPackage["AFMVisualize`"]
 	(* 
 	   Conventions:
 	   dm/dt =-\[Gamma] m\[Cross]H + \[Alpha] m x dm/dt
-	   H = J*M1*M2 - Ka(M1.na)^2 - Ka(M2.na)^2 - Kh(M1.nh)^2 - Kh(M2.nh)^2 - H0*(M1+M2)
+	   H = J*M1*M2 - Ka(M1.na)^2 - Ka(M2.na)^2 - Kh(M1.nh)^2 - Kh(M2.nh)^2 - H0*(M1+M2) + D*(M1 x M2)
 	   M1 and M2 are dimensionaless and unitary vectors. True magnetic moment is \[HBar]\[Gamma]S with S the quantum spin number 
 	   All params (J, Ka, Kh, H0) are in energy unit
 	   Exchange fields:    Bex1=-BE*M2, Bex2=-BE*M1, BE=J/\[HBar]\[Gamma]S > 0
 	   Easy axis anisotropy fields:  B_easy=BA*(M.na)na, BA=2Ka/\[HBar]\[Gamma]S>0, with na (unitary vector) pointing to the direction of EasyAxis
 	   Hard axis anisotropy fields:  B_hard=BH*(M.nh)nh, BH=2Kh/\[HBar]\[Gamma]S<0, with nh (unitary vector) pointing to the direction of HardAxis
 	   Zeeman fields:                B0 = H0/\[HBar]\[Gamma]S
+	   DMI fields:                   D1 = -M2 x D/\[HBar]\[Gamma]S      D2 = -D x M1/\[HBar]\[Gamma]S 
 	 *)
 	
 	(* Public variables and functions *)
 	BE::usage = "Positive exchange field";
 	EasyAxis::usage = "Magnitude & direction of Easy axis";
 	HardAxis::usage = "Magnitude & direction of hard axis";
+	DMI::usage = "Magnitude & direction of DMI";
 	SetExchange::usage = "Set exchange strength";
 	AddEasyAxis::usage = "Add one easy axis";
 	AddHardAxis::usage = "Add one hard axis";
+	AddDMI::usage = "Add one DMI";
 	AddBFieldDC::usage = "Add one DC magnetic field (flux)";
 	RemoveEasy::usage  = "Remove one easy axis";
 	RemoveHard::usage  = "Remove one easy axis";
+	RemoveDMI::usage  = "Remove one DMI";
 	RemoveBFieldDC::usage = "Remove one Zeeman field";
 	ResetAll::usage    = "Reset every magnetic params";
 	DispConfg::usage   = "Display the field configurations";
@@ -34,42 +38,53 @@ BeginPackage["AFMVisualize`"]
 	FindEnergyMinima::usage = "Find all possible energy minima";
 	FindGS::usage = "Find lowest energy minima";
 	AFMEnergy::usage = "Calcuate the AFM energy";
-	Meq::usage="test";
+	Meq::usage = "Record of M position in AFMDynamics";
+	E\[Alpha]::usage = "Energy of \[Alpha] mode";
+	E\[Beta]::usage = "Energy of \[Beta] mode";
 	
 	BE = 1;       (* Exchange strength BE=J/\[HBar]\[Gamma]S. Default value: 1 *)
 	EasyAxis = {};(* Stores the magnitudes (BA=2Ka/\[HBar]\[Gamma]S>0) and normalized directional vectors of easy axis *)
 	HardAxis = {};(* Stores the magnitudes (BH=2Kh/\[HBar]\[Gamma]S<0) and normalized difectional vectors of hard axis *)
+	DMI      = {};(* Stores the magnitudes D (D1=-M2 x D/\[HBar]\[Gamma]S, D2=-D x M1/\[HBar]\[Gamma]S) and normalized difectional vectors of DMI vector*)
 	BFieldDC = {};(* Stores DC Zeeman fields B0 = H0/\[HBar]\[Gamma]S *)
-	\[Gamma] = 0.176085963023;(* Angular gyromagnetic ratio with unit THZ*rad/Tels such that time is in picosecond scale*)
-	AFMVersion = "1.0.0";
+	\[Gamma] = 0.176085963023;(* Angular gyromagnetic ratio with unit THZ*rad/Tesla such that time is in picosecond scale*)
+	AFMVersion = "2.0";
 	
 
 
 Begin["`Private`"]
-	ResetAll[] := (EasyAxis = {}; HardAxis = {}; BFieldDC = {}; BE=1;)
+	ResetAll[] := (EasyAxis = {}; HardAxis = {}; BFieldDC = {}; BE=1; DMI={};)
 	SetExchange[J_] := If[J>0 && FreeQ[J, _complex], (BE=J;), Print["Fail! Exchange strength must be real and positive for AFM!"]];
-	AddEasyAxis[Amp_, D_] := If[Amp>0 && FreeQ[D, _complex], (AppendTo[EasyAxis, {Amp, Normalize[D]}];), Print["Fail! For easy axis, magnitude must be positive and directional vector must be real!"]];
-	AddHardAxis[Amp_, D_] := If[Amp<0 && FreeQ[D, _complex], (AppendTo[HardAxis, {Amp, Normalize[D]}];), Print["Fail! For hard axis, magnitude must be negative and directional vector must be real!"]];
-	AddBFieldDC[Amp_, D_] := If[Amp!=0 && FreeQ[D, _complex], (AppendTo[BFieldDC, {Amp, Normalize[D]}];), Print["Fail! Magnitude cannot be zero and the directional vector must be real!"]];
+	AddEasyAxis[Amp_, D_] := If[Amp>=0 && FreeQ[D, _complex], (AppendTo[EasyAxis, {Amp, Normalize[D]}];), Print["Fail! For easy axis, magnitude cannot be negative and directional vector must be real!"]];
+	AddHardAxis[Amp_, D_] := If[Amp<=0 && FreeQ[D, _complex], (AppendTo[HardAxis, {Amp, Normalize[D]}];), Print["Fail! For hard axis, magnitude cannot be positive and directional vector must be real!"]];
+	AddDMI[Amp_, D_]      := If[FreeQ[Amp, _complex] && FreeQ[D, _complex], (AppendTo[DMI,      {Amp, Normalize[D]}];), Print["Fail! Magnitude and the directional vector must be real!"]];
+	AddBFieldDC[Amp_, D_] := If[FreeQ[Amp, _complex] && FreeQ[D, _complex], (AppendTo[BFieldDC, {Amp, Normalize[D]}];), Print["Fail! Magnitude and the directional vector must be real!"]];
 	RemoveEasy[i_] := (EasyAxis = Delete[EasyAxis, i];)
 	RemoveHard[i_] := (HardAxis = Delete[HardAxis, i];)
- 	RemoveBFieldDC[i_] := (BFieldDC = Delete[BFieldDC, i];)
+	RemoveDMI[i_]  := (DMI = Delete[DMI, i];)
+	RemoveBFieldDC[i_] := (BFieldDC = Delete[BFieldDC, i];)
 	
 	(* Display the system's params *)
 	DispParams[] := Module[{pair,vars,values},
-					vars={"Fields", "J", "B0", "BA", "BH"};
-					values={" Values", BE, BFieldDC, EasyAxis, HardAxis};
+					vars={"Fields", "J", "B0", "BA", "BH","DMI"};
+					values={" Values", BE, BFieldDC, EasyAxis, HardAxis, DMI};
 					pair=Transpose[{vars,values}];
 					Grid[pair,Frame->All,Alignment->Left,ItemStyle->{Automatic},Background->{{Lighter[Blue,0.7]},Lighter[Yellow,0.9]},Dividers->{True,{True,True}}]];
 					
 	(* Display the field configurations in a unit sphere *)
-	DispConfg[switch_:"on"] := Module[{BFields, AFields, HFields, fig},
+	DispConfg[switch_:"on"] := Module[{BFields, AFields, HFields, DFields, fig},
 					If[Length[BFieldDC]>0, BFields=Table[{Green,  Arrow[{{0,0,0},0.7*BFieldDC[[i,2]]}],Black,Text[Style["B" <>ToString[i]<>"="<>ToString[Norm[BFieldDC[[i,1]]]],12,Italic],0.7*BFieldDC[[i,2]],{1.2,1.2}]},{i,Length[BFieldDC]}], BFields={}];
-					If[Length[EasyAxis]>0, AFields=Table[{Magenta,Arrow[{{0,0,0},0.5*EasyAxis[[i,2]]}],Black,Text[Style["Ha"<>ToString[i]<>"="<>ToString[Norm[EasyAxis[[i,1]]]],12,Italic],0.5*EasyAxis[[i,2]],{1.2,1.2}]},{i,Length[EasyAxis]}], AFields={}];
+					If[Length[EasyAxis]>0, AFields=Table[{Magenta,Arrow[{{0,0,0},0.9*EasyAxis[[i,2]]}],Black,Text[Style["Ha"<>ToString[i]<>"="<>ToString[Norm[EasyAxis[[i,1]]]],12,Italic],0.9*EasyAxis[[i,2]],{1.2,1.2}]},{i,Length[EasyAxis]}], AFields={}];
+					If[Length[DMI]>0,      DFields=Table[{Cyan,   Arrow[{{0,0,0},0.8*DMI[[i,2]]}],     Black,Text[Style["D"<>ToString[i]<>"="<>ToString[Norm[DMI[[i,1]]]],      12,Italic],0.8*DMI[[i,2]],{1.2,1.2}]},     {i,Length[DMI]}],      DFields={}];
 					If[Length[HardAxis]>0, HFields=Table[{Orange, Arrow[{{0,0,0},0.5*HardAxis[[i,2]]}],Black,Text[Style["Hh"<>ToString[i]<>"="<>ToString[Norm[HardAxis[[i,1]]]],12,Italic],0.5*HardAxis[[i,2]],{1.2,1.2}]},{i,Length[HardAxis]}], HFields={}];
 					fig=Graphics3D[{{Black,Arrow[{{0,0,0},{1.4,0,0}}],Text["X",{1.5,0,0}]},{Black,Arrow[{{0,0,0},{0,1.4,0}}],Text["Y",{0,1.5,0}]},{Black,Arrow[{{0,0,0},{0,0,1.4}}],Text["Z",{0,0,1.5}]},
-					{Opacity[0.1],Gray,Sphere[{0,0,0},1]}, BFields, AFields, HFields},ImageSize->Medium,Boxed->False,Axes->False,PlotRange->All];
+					{Opacity[0.1],Gray,Sphere[{0,0,0},1]}, BFields, AFields, HFields, DFields},ImageSize->Medium,Boxed->False,Axes->False,PlotRange->All];
 					If[switch=="on", Row[{fig,DispParams[]},Spacer[0]], fig]];
+					
+	(* Clean version: Display unit sphere and coordinates without fields*)				
+	DispConfg["Clean"] := Module[{fig},
+					fig=Graphics3D[{{Black,Arrow[{{0,0,0},{1.4,0,0}}],Text["X",{1.5,0,0}]},{Black,Arrow[{{0,0,0},{0,1.4,0}}],Text["Y",{0,1.5,0}]},{Black,Arrow[{{0,0,0},{0,0,1.4}}],Text["Z",{0,0,1.5}]},
+					{Opacity[0.1],Gray,Sphere[{0,0,0},1]}},ImageSize->Medium,Boxed->False,Axes->False,PlotRange->All];fig];
 					
 	(* Display the Magnetic configurations *)
 	DispM[S1_, S2_] := Graphics3D[{{Blue,Arrow[{{0,0,0},Normalize[S1]}],Text["M1",1.1*Normalize[S1]]},{Red,Arrow[{{0,0,0},Normalize[S2]}],Text["M2",1.1*Normalize[S2]]}},Boxed->False,Axes->False,PlotRange->All];
@@ -77,11 +92,13 @@ Begin["`Private`"]
 								Graphics3D[{{Blue,Arrow[{{0,0,0},S1}],Text["M1",1.1*S1]},{Red,Arrow[{{0,0,0},S2}],Text["M2",1.1*S2]}},Boxed->False,Axes->False,PlotRange->All]];
 					
 	(* Energy functional. Unit: \[HBar]\[Gamma]S*T *)
-	AFMEnergy[S1_, S2_] := Module[{Heisenberg,Easy,Hard,Zeeman}, Heisenberg = BE*(S1 . S2);
+	(*H = J*M1*M2 - Ka(M1.na)^2 - Ka(M2.na)^2 - Kh(M1.nh)^2 - Kh(M2.nh)^2 - H0*(M1+M2) + D*(M1 x M2)*)
+	AFMEnergy[S1_, S2_] := Module[{Heisenberg,Easy,Hard,Zeeman,Moriya}, Heisenberg = BE*(S1 . S2);
 							If[Length[EasyAxis]>0, Easy=Sum[-EasyAxis[[i,1]]*((S1 . EasyAxis[[i,2]])^2+(S2 . EasyAxis[[i,2]])^2)/2.0,{i,1,Length[EasyAxis]}], Easy=0];
 							If[Length[HardAxis]>0, Hard=Sum[-HardAxis[[i,1]]*((S1 . HardAxis[[i,2]])^2+(S2 . HardAxis[[i,2]])^2)/2.0,{i,1,Length[HardAxis]}], Hard=0];
+							If[Length[DMI]>0,      Moriya=Sum[DMI[[i,1]]*DMI[[i,2]] . (S1\[Cross]S2),{i,1,Length[DMI]}], Moriya=0];
 							If[Length[BFieldDC]>0, Zeeman=Sum[-BFieldDC[[i,1]]*(S1+S2) . BFieldDC[[i,2]],{i,1,Length[BFieldDC]}], Zeeman=0];
-							Heisenberg+Easy+Hard+Zeeman];
+							Heisenberg+Easy+Hard+Zeeman+Moriya];
 							
 	(* Find one local energy minima *)
 	FindEnergyMinima[\[Theta]10_, \[Theta]20_, \[Phi]10_, \[Phi]20_,switch_:"on"] := Module[{S1,S2,\[Theta]1,\[Theta]2,\[Phi]1,\[Phi]2,Sol,vars,values,pair}, S1={Sin[\[Theta]1]*Cos[\[Phi]1], Sin[\[Theta]1]*Sin[\[Phi]1], Cos[\[Theta]1]}; S2={Sin[\[Theta]2]*Cos[\[Phi]2], Sin[\[Theta]2]*Sin[\[Phi]2], Cos[\[Theta]2]};
@@ -94,26 +111,24 @@ Begin["`Private`"]
 							
 							
 	(* Find ground state with lowest energy *)						
-	FindGS[switch_:"on"] := Module[{D1,D2,D3,Dtot,EGS,Ind,Sol,Bgplot, Mplot,Btot,S1,S2,t1,t2,p1,p2,\[Tau]1,\[Tau]2,vars,vals,pair,info},
-				(* For all easy axis, start with their directions for finding the minima. For all B0 and hard axis, start with an orthorgonal direction instead. *)
+	FindGS[switch_:"on"] := Module[{D1,D2,D3,D4,Dtot,EGS,Ind,Sol,Bgplot,Mplot,Btot,S1,S2,t1,t2,p1,p2,\[Tau]1,\[Tau]2,vars,vals,pair,info},
+				(* For all easy axis, start with their directions to find the minima. For all B0, hard axis and DMI, start with an orthorgonal direction instead. *)
 				If[Length[EasyAxis]>0, D1=Table[EasyAxis[[i,2]],{i,1,Length[EasyAxis]}], D1={}];
 				If[Length[BFieldDC]>0, D2=Table[Normalize[If[BFieldDC[[i,2]]\[Cross]{1,0,0}!={0,0,0}, BFieldDC[[i,2]]\[Cross]{1,0,0}, BFieldDC[[i,2]]\[Cross]{0,1,0}]],{i,1,Length[BFieldDC]}], D2={}];
 				If[Length[HardAxis]>0, D3=Table[Normalize[If[HardAxis[[i,2]]\[Cross]{1,0,0}!={0,0,0}, HardAxis[[i,2]]\[Cross]{1,0,0}, HardAxis[[i,2]]\[Cross]{0,1,0}]],{i,1,Length[HardAxis]}], D3={}];
+				If[Length[DMI]>0,      D4=Table[Normalize[If[DMI[[i,2]]\[Cross]{1,0,0}!={0,0,0},      DMI[[i,2]]\[Cross]{1,0,0},      DMI[[i,2]]\[Cross]{0,1,0}]],     {i,1,Length[DMI]}],      D4={}];
 				If[Length[BFieldDC]>0, Btot=Sum[BFieldDC[[i,1]]*BFieldDC[[i,2]],{i,1,Length[BFieldDC]}], Btot={0,0,0}];
-				Dtot = D1~Join~D2~Join~D3; If[Length[Dtot]<1,(Print["At least one input for effective field is required to determine the ground state!"];Abort[])];
+				Dtot = D1~Join~D2~Join~D3~Join~D4; If[Length[Dtot]<1,(Print["At least one input for effective field is required to determine the ground state!"]; Abort[])];
 				Sol=Table[Module[{\[Theta]1,\[Theta]2,\[Phi]1,\[Phi]2},
-							\[Theta]1=ArcCos[Dtot[[i,3]]]; If[Abs[Dtot[[i,3]]-1]>=10^(-9), \[Phi]1=ArcTan[Dtot[[i,2]],Dtot[[i,1]]], \[Phi]1=0]; \[Theta]2=Pi-\[Theta]1; \[Phi]2=\[Phi]1+Pi; FindEnergyMinima[\[Theta]1,\[Theta]2,\[Phi]1,\[Phi]2,"off"]],
+							\[Theta]1=ArcCos[Dtot[[i,3]]]; If[Abs[Abs[Dtot[[i,3]]]-1]>=10^(-9), \[Phi]1=ArcTan[Dtot[[i,2]],Dtot[[i,1]]], \[Phi]1=0]; \[Theta]2=Pi-\[Theta]1; \[Phi]2=\[Phi]1+Pi; FindEnergyMinima[\[Theta]1,\[Theta]2,\[Phi]1,\[Phi]2,"off"]],
 					{i,1,Length[Dtot]}];
 				EGS=Min[Sol[[All,1]]]; Ind=Position[Sol[[All,1]],EGS]; Bgplot=DispConfg["off"];
-				t1=Sol[[Ind[[1,1]],2]];
-				t2=Sol[[Ind[[1,1]],3]];
-				p1=Sol[[Ind[[1,1]],4]];
-				p2=Sol[[Ind[[1,1]],5]];
+				t1=Sol[[Ind[[1,1]],2]]; t2=Sol[[Ind[[1,1]],3]]; p1=Sol[[Ind[[1,1]],4]]; p2=Sol[[Ind[[1,1]],5]];
 				Mplot=DispM[t1,t2,p1,p2];
 				S1={Sin[t1]*Cos[p1], Sin[t1]*Sin[p1], Cos[t1]};
 				S2={Sin[t2]*Cos[p2], Sin[t2]*Sin[p2], Cos[t2]};
-				\[Tau]1=-\[Gamma]*S1\[Cross](CalAns[S1]+Btot-BE*S2);
-				\[Tau]2=-\[Gamma]*S2\[Cross](CalAns[S2]+Btot-BE*S1);
+				\[Tau]1=-\[Gamma]*S1\[Cross](CalAns[S1]+Btot-BE*S2+CalDMI[S2,"1"]); (* unit: THz*rad *)
+				\[Tau]2=-\[Gamma]*S2\[Cross](CalAns[S2]+Btot-BE*S1+CalDMI[S1,"2"]); (* unit: THz*rad *)
 				vars={"E", "\[Theta]1", "\[Theta]2", "\[Phi]1", "\[Phi]2", "\[Tau]1", "\[Tau]2"};
 				vals={EGS, t1, t2, p1, p2, Norm[\[Tau]1], Norm[\[Tau]2]};
 				pair=Transpose[{vars,vals}];
@@ -129,8 +144,8 @@ Begin["`Private`"]
 						Bgplot = DispConfg["off"];
 						Mplot=DispM[mag[[tmax,1]], mag[[tmax,2]]];
 						trace=Graphics3D[{{Blue, Line[mag[[1;;tmax,1]]]},{Red, Line[mag[[1;;tmax,2]]]}},Boxed->False,Axes->False,PlotRange->All,ImageSize->Medium];
-						\[Tau]1=-\[Gamma]*mag[[tmax,1]]\[Cross](CalAns[mag[[tmax,1]]]+Btot-BE*mag[[tmax,2]]);
-						\[Tau]2=-\[Gamma]*mag[[tmax,2]]\[Cross](CalAns[mag[[tmax,2]]]+Btot-BE*mag[[tmax,1]]);
+						\[Tau]1=-\[Gamma]*mag[[tmax,1]]\[Cross](CalAns[mag[[tmax,1]]]+Btot-BE*mag[[tmax,2]]+CalDMI[mag[[tmax,2]],"1"]); (* unit: THz*rad *)
+						\[Tau]2=-\[Gamma]*mag[[tmax,2]]\[Cross](CalAns[mag[[tmax,2]]]+Btot-BE*mag[[tmax,1]]+CalDMI[mag[[tmax,1]],"2"]); (* unit: THz*rad *)
 						vars={"\[Theta]1", "\[Theta]2", "\[Phi]1", "\[Phi]2", "|\[Tau]1|", "|\[Tau]2|"};
 						vals={ArcCos[mag[[tmax,1,3]]], ArcCos[mag[[tmax,2,3]]],
 							If[Abs[mag[[tmax,1,3]]-1]>=10^(-9), ArcTan[mag[[tmax,1,2]],mag[[tmax,1,1]]], 0],
@@ -141,13 +156,13 @@ Begin["`Private`"]
 						Row[{Show[Bgplot,trace,Mplot],info},Spacer[0]]
 						];
 						
-	(* Evolve the M1 and M2 acc *)
+	(* Evolve the M1 and M2 according to FL and DL as designed input driving forces *)
 	AFMDynamics[\[Alpha]G_, \[Delta]t_, tmax_, FL_, DL_, m1i_, m2i_] := Manipulate[Module[{Btot, mag, BFields, AFields, HFields, Bgplot, Mplot, trace},
 						mag={{Normalize[m1i], Normalize[m2i]}};
 						If[Length[BFieldDC]>0, Btot=Sum[BFieldDC[[i,1]]*BFieldDC[[i,2]],{i,1,Length[BFieldDC]}], Btot={0,0,0}];
 						Do[AppendTo[mag, LLGSolver[mag[[j-1,1]], mag[[j-1,2]], Btot+FL[(j-2)*\[Delta]t], DL[(j-2)*\[Delta]t], BE, \[Alpha]G, \[Delta]t]], {j,2,tmax}];
 						Bgplot = DispConfg["off"];
-						Mplot=DispM[mag[[T,1]], mag[[T,2]]];Meq=mag;
+						Mplot=DispM[mag[[T,1]], mag[[T,2]]]; Meq=mag;
 						trace=Graphics3D[{{Blue, Line[mag[[1;;T,1]]]},{Red, Line[mag[[1;;T,2]]]}},Boxed->False,Axes->False,PlotRange->All,ImageSize->Medium];
 						Show[Bgplot,trace,Mplot]
 						],{{T, 2, "time"}, 2, tmax, 1, Appearance->"Labeled"}];
@@ -157,12 +172,18 @@ Begin["`Private`"]
 						If[Length[EasyAxis]>0, Beasy=Sum[EasyAxis[[i,1]]*(Md . EasyAxis[[i,2]])*EasyAxis[[i,2]],{i,1,Length[EasyAxis]}], Beasy={0,0,0}];
 						If[Length[HardAxis]>0, Bhard=Sum[HardAxis[[i,1]]*(Md . HardAxis[[i,2]])*HardAxis[[i,2]],{i,1,Length[HardAxis]}], Bhard={0,0,0}];
 						Beasy+Bhard];
+						
+	(* Calculate total DMI field for tau1*)
+	CalDMI[s2_,"1"] := Module[{Dfields}, If[Length[DMI]>0, Dfields=Sum[-DMI[[i,1]]*(s2\[Cross]DMI[[i,2]]),{i,1,Length[DMI]}], Dfields={0,0,0}]; Dfields];
+						
+	(* Calculate total DMI field for tau2*)					
+	CalDMI[s1_,"2"] := Module[{Dfields}, If[Length[DMI]>0, Dfields=Sum[-DMI[[i,1]]*(DMI[[i,2]]\[Cross]s1),{i,1,Length[DMI]}], Dfields={0,0,0}]; Dfields];
 	
 	(* LLG solver: Calculate M1 and M2 for next step *)
 	LLGSolver[S1_, S2_, FL_, DL_, BE_, \[Alpha]_, dt_] := Module[{HG1, HG2, Ht1, Ht2, A1, A2, m1, m2},
 												m1=Normalize[S1]; m2=Normalize[S2];
-												Ht1=CalAns[m1]+FL+S1\[Cross]DL-BE*m2;
-												Ht2=CalAns[m2]+FL+S2\[Cross]DL-BE*m1;
+												Ht1=CalAns[m1]+FL+S1\[Cross]DL-BE*m2+CalDMI[m2,"1"];
+												Ht2=CalAns[m2]+FL+S2\[Cross]DL-BE*m1+CalDMI[m1,"2"];
 												HG1=\[Alpha]*(Ht1\[Cross]m1);          HG2=\[Alpha]*(Ht2\[Cross]m2);
 												Ht1=\[Gamma]*(HG1-Ht1)/(1+\[Alpha]^2); Ht2=\[Gamma]*(HG2-Ht2)/(1+\[Alpha]^2);
 												A1={{0, Ht1[[3]], -Ht1[[2]]},{-Ht1[[3]], 0, Ht1[[1]]},{Ht1[[2]], -Ht1[[1]], 0}};
@@ -178,7 +199,8 @@ Begin["`Private`"]
 	GlobalToLocal[GFields_, S_] := Module[{xL,yL,zL=Normalize[S]}, yL=Normalize[If[{1,0,0}\[Cross]zL!={0,0,0}, {1,0,0}\[Cross]zL, {0,1,0}\[Cross]zL]]; xL=Normalize[yL\[Cross]zL];
 										{GFields . xL, GFields . yL, GFields . zL}];
 										
-	(* Tansform the Local Fields in the local coordinates of S to the Global coordinates *)									
+	(* Tansform the Local Fields in the local coordinates of S to the Global coordinates *)
+	(* The construction of local coordinates xL,yL,zL in LocalToGlobal must be the same as GlobalToLocal*)									
 	LocalToGlobal[LFields_, S_] := Module[{xL,yL,zL=Normalize[S],GF}, yL=Normalize[If[{1,0,0}\[Cross]zL!={0,0,0}, {1,0,0}\[Cross]zL, {0,1,0}\[Cross]zL]]; xL=Normalize[yL\[Cross]zL];
 										GF=LFields[[1]]*xL+LFields[[2]]*yL+LFields[[3]]*zL;
 										{GF[[1]], GF[[2]], GF[[3]]}];
@@ -192,19 +214,21 @@ Begin["`Private`"]
 						Beasy+Bhard];
 	
 	(* Tansform all the fields in the local coordinates of M1 and M2 *)
-	LLG["1",\[Theta]1_,\[Theta]2_,\[Phi]1_,\[Phi]2_] := Module[{S1, S2, Btot, B0L1, Bex},
+	LLG["1",\[Theta]1_,\[Theta]2_,\[Phi]1_,\[Phi]2_] := Module[{S1, S2, Btot, B0L1, Bex, D1},
 								S1={Sin[\[Theta]1]*Cos[\[Phi]1], Sin[\[Theta]1]*Sin[\[Phi]1], Cos[\[Theta]1]}; S2={Sin[\[Theta]2]*Cos[\[Phi]2], Sin[\[Theta]2]*Sin[\[Phi]2], Cos[\[Theta]2]};
 								If[Length[BFieldDC]>0, Btot=Sum[BFieldDC[[i,1]]*BFieldDC[[i,2]],{i,1,Length[BFieldDC]}], Btot={0,0,0}];
 								B0L1 = GlobalToLocal[Btot, S1];
-								Bex = GlobalToLocal[LocalToGlobal[-m2L, S2],S1];
-								-\[Gamma]*m1L\[Cross](B0L1 + BE*Bex + CalLocalAns[S1, m1L])];
+								Bex  = GlobalToLocal[LocalToGlobal[-m2L, S2],S1];
+								D1   = GlobalToLocal[CalDMI[LocalToGlobal[m2L, S2],"1"],S1];
+								-\[Gamma]*m1L\[Cross](B0L1 + BE*Bex + CalLocalAns[S1, m1L] + D1)];
 	
-	LLG["2",\[Theta]1_,\[Theta]2_,\[Phi]1_,\[Phi]2_] := Module[{S1, S2, Btot, B0L2, Bex},
+	LLG["2",\[Theta]1_,\[Theta]2_,\[Phi]1_,\[Phi]2_] := Module[{S1, S2, Btot, B0L2, Bex, D2},
 								S1={Sin[\[Theta]1]*Cos[\[Phi]1], Sin[\[Theta]1]*Sin[\[Phi]1], Cos[\[Theta]1]}; S2={Sin[\[Theta]2]*Cos[\[Phi]2], Sin[\[Theta]2]*Sin[\[Phi]2], Cos[\[Theta]2]};
 								If[Length[BFieldDC]>0, Btot=Sum[BFieldDC[[i,1]]*BFieldDC[[i,2]],{i,1,Length[BFieldDC]}], Btot={0,0,0}];
 								B0L2 = GlobalToLocal[Btot, S2];
-								Bex = GlobalToLocal[LocalToGlobal[-m1L, S1],S2];
-								-\[Gamma]*m2L\[Cross](B0L2 + BE*Bex + CalLocalAns[S2, m2L])];
+								Bex  = GlobalToLocal[LocalToGlobal[-m1L, S1],S2];
+								D2   = GlobalToLocal[CalDMI[LocalToGlobal[m1L, S1],"2"],S2];
+								-\[Gamma]*m2L\[Cross](B0L2 + BE*Bex + CalLocalAns[S2, m2L] + D2)];
 	
 	(* Construct the LLG Matrix: dM/dt=i\[Omega]*M=[4x4 matrix]xM *)
 	Mc[sublattice_,\[Theta]1_,\[Theta]2_,\[Phi]1_,\[Phi]2_,row_,col_] := Coefficient[LLG[sublattice,\[Theta]1,\[Theta]2,\[Phi]1,\[Phi]2][[row]],col,1];
@@ -226,6 +250,7 @@ Begin["`Private`"]
 							m1y = S[[2, mode, 2]];
 							m2x = S[[2, mode, 3]];
 							m2y = S[[2, mode, 4]];
+							E\[Alpha]  = S[[1,4]]; E\[Beta]  = S[[1,3]];
 							n1 = {Sin[\[Theta]1]*Cos[\[Phi]1], Sin[\[Theta]1]*Sin[\[Phi]1], Cos[\[Theta]1]};
 							n2 = {Sin[\[Theta]2]*Cos[\[Phi]2], Sin[\[Theta]2]*Sin[\[Phi]2], Cos[\[Theta]2]};
 							M1t[t_,amp_] := LocalToGlobal[amp*{Re[m1x*Exp[I*t]], Re[m1y*Exp[I*t]], 0},n1]+n1;
@@ -250,23 +275,24 @@ Begin["`Private`"]
 							If[nl == 1,{Black,Text[Style["N",12,Italic],Ns*Neel[T, Amp],{1.2,1.2}]}],
 							If[nl == 1,{Black,Text[Style["M",12,Italic],Ms*Mag[T, Amp],{1.2,1.2}]}]
 							},
-							Boxed->False,Axes->False,Ticks->None,ImageSize->Large,ImagePadding->0,PlotRange->All
-							];
-							Show[DispConfg["off"],fig]
+							Boxed->False,Axes->False,Ticks->None,ImageSize->Large,ImagePadding->0,PlotRange->All];
+							If[FieldSwitch==1, Show[DispConfg["off"],fig], Show[DispConfg["Clean"],fig]]
 							],
+							{{FieldSwitch, 1, "Fields"}, {1->"on", 0->"off"}, SetterBar},
 							{{Amp, 1, "Enlarge"}, 0.01, 10, Appearance->"Labeled"},
 							{{T, 0, "Time"}, 0, 100, Appearance->"Labeled"},
 							{{mode, 4, "Mode"}, {4->"\[Alpha]", 3->"\[Beta]"}, SetterBar},
 							{{nl, 0, "Neel Vector"}, {0->"off", 1->"on"}, SetterBar},
 							Dynamic[If[nl==1,Control[{{Ms,1,"Enlarge m"}, 0.01,100,Appearance->"Labeled"}], Invisible[{{Ms,None},ControlType->None}]]],
-							Dynamic[If[nl==1,Control[{{Ns,1, "Enlarge N"},0.01,100,Appearance->"Labeled"}], Invisible[{{Ns,None},ControlType->None}]]]];
+							Dynamic[If[nl==1,Control[{{Ns,1, "Enlarge N"},0.01,100,Appearance->"Labeled"}], Invisible[{{Ns,None},ControlType->None}]]],
+							Dynamic[Column[{"E\[Alpha]="<>ToString[E\[Alpha]], "E\[Beta]="<>ToString[E\[Beta]]}]]];
 
 
 End[] 
 
 (* Ending infos*)
 Print["AFMVisualize loaded successfully." <> " Version: " <> AFMVersion];
-Print["Developed by Junyu Tang (UCR). Licensed under the MIT License."]
+Print["Developed by Junyu Tang (UCR). Licensed under MIT License."]
 Print["Type ?AFMVisualize`* to see all vriables and available functions."];
 Print["For more infos, visit: https://github.com/Rh0-aias/AFMVisualize"];
 
