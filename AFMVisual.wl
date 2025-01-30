@@ -157,15 +157,26 @@ Begin["`Private`"]
 						];
 						
 	(* Evolve the M1 and M2 according to FL and DL as designed input driving forces *)
-	AFMDynamics[\[Alpha]G_, \[Delta]t_, tmax_, FL_, DL_, m1i_, m2i_] := Manipulate[Module[{Btot, mag, BFields, AFields, HFields, Bgplot, Mplot, trace},
+	(*AFMDynamics[\[Alpha]G_, \[Delta]t_, tmax_, FL_, DL_, m1i_, m2i_] := Manipulate[Module[{Btot, mag, BFields, AFields, HFields, Bgplot, Mplot, trace},
 						mag={{Normalize[m1i], Normalize[m2i]}};
 						If[Length[BFieldDC]>0, Btot=Sum[BFieldDC[[i,1]]*BFieldDC[[i,2]],{i,1,Length[BFieldDC]}], Btot={0,0,0}];
 						Do[AppendTo[mag, LLGSolver[mag[[j-1,1]], mag[[j-1,2]], Btot+FL[(j-2)*\[Delta]t], DL[(j-2)*\[Delta]t], BE, \[Alpha]G, \[Delta]t]], {j,2,tmax}];
-						Bgplot = DispConfg["off"];
+						Bgplot = DispConfg["Clean"];
 						Mplot=DispM[mag[[T,1]], mag[[T,2]]]; Meq=mag;
 						trace=Graphics3D[{{Blue, Line[mag[[1;;T,1]]]},{Red, Line[mag[[1;;T,2]]]}},Boxed->False,Axes->False,PlotRange->All,ImageSize->Medium];
 						Show[Bgplot,trace,Mplot]
-						],{{T, 2, "time"}, 2, tmax, 1, Appearance->"Labeled"}];
+						],{{T, tmax, "time"}, 2, tmax, 1, Appearance->"Labeled"}];*)
+						
+	 (* Evolve the M1 and M2 according to FL and DL as designed input driving forces *)
+	 (*No manipulate plot version, allowing for lager tmax*)		
+	 AFMDynamics[\[Alpha]G_, \[CapitalDelta]t_, tmax_, FL_, DL_, m1i_, m2i_] := Module[{Btot, mag, Bgplot, Mplot, trace},
+	                 mag = {{Normalize[m1i], Normalize[m2i]}};
+	                 If[Length[BFieldDC] > 0, Btot = Sum[BFieldDC[[i, 1]]*BFieldDC[[i, 2]], {i, 1, Length[BFieldDC]}], Btot = {0, 0, 0}];
+	                 Do[AppendTo[mag, LLGSolver[mag[[j - 1, 1]], mag[[j - 1, 2]], Btot + FL[(j - 2)*\[CapitalDelta]t], DL[(j - 2)*\[CapitalDelta]t], BE, \[Alpha]G, \[CapitalDelta]t]];,{j, 2, tmax}];
+	                 Bgplot = DispConfg["Clean"];
+	                 Mplot = DispM[mag[[tmax, 1]], mag[[tmax, 2]]];
+	                 trace = Graphics3D[{{Blue, Line[mag[[1 ;; tmax, 1]]]}, {Red, Line[mag[[1 ;; tmax, 2]]]}}, Boxed -> False, Axes -> False, PlotRange -> All, ImageSize -> Medium];
+	                 Show[Bgplot, trace, Mplot]];						
 	
 	(* Calculate total anisotropy field *)
 	CalAns[Md_] := Module[{Beasy,Bhard},
