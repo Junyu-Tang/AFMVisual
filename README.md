@@ -1,10 +1,17 @@
 # AFMVisual
-A Mathematica Paclet that allows for visualization of two-sublattice antiferromagnetic dynamics with arbitary input, including Easy-axis anisotropy fields, hard-axis anisotropy fields, Zeeman fields, DMI (new feature!), spin torques (time-dependent or indepedent Field-like torques and Antidamping-like torques).
-The usual workflow is as
+A Mathematica Paclet that allows for visualization of two-sublattice antiferromagnetic dynamics with arbitary number of inputs, including Easy-axis anisotropy fields, hard-axis anisotropy fields, Zeeman fields, spin torques and DMI (new feature!).
+The usual workflow is as following:
+
 * Set up the system's magnetic params
 * Find equilibirum position of the magnetization (ground state)
 * Solve and visualize the eigenmodes (resonance mode)
 * Visualize the antiferromagnetic dynamcis with designed driving fields (e.g. SOT)
+
+## How it works?
+
+The essential part of this Paclet is solving the LLG equations in the local frame of two magentic moments $m_1$ and $m_2$.
+The most useful function of this Paclet is ```PlotEigen[]```, which allows for visualization of antiferromagentic resonance mode with fine control of plotting for a better visualization.
+
 
 ## Installation
 
