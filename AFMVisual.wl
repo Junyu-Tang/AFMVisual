@@ -305,6 +305,6 @@ End[]
 Print["AFMVisual loaded successfully." <> " Version: " <> AFMVersion];
 Print["Developed by Junyu Tang (UCR). Licensed under MIT License."]
 Print["Type ?AFMVisual`* to see all vriables and available functions."];
-Print["For more infos, visit: https://github.com/Rh0-aias/AFMVisual"];
+Print["For more infos, visit: https://github.com/Junyu-Tang/AFMVisual"];
 
 EndPackage[]
