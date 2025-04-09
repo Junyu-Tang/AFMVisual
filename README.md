@@ -239,7 +239,7 @@ The energy functional for the AFM system we adopt in this package is
 
 $E[m_1,m_2]= J m_1\cdot m_2 -K_a (m_1\cdot \hat{n}_a)^2 -K_a (m_2\cdot \hat{n}_a)^2 -K_h (m_1\cdot \hat{n}_h)^2 -K_h (m_2\cdot \hat{n}_h)^2 - H_0 (m_1+m_2) + D\cdot (m_1 \times m_2)$
 
-Note that we have adopt the convention that the magnetic moment is a **dimensionaless** and **unitary** vectors so all the parameters in the above equation has **energy** unit.
+Note that $m_i$ respresents the magnetic moment, which has opposite direction to its spin angular momentum (we define the gyromagnetic ratio to be positive). We have adopt the convention that the magnetic moment is a **dimensionaless** and **unitary** vectors so all the parameters in the above equation has **energy** unit.
 
 To simulate a system with magnetic moment $\hbar \gamma S$ with $S$ the quantum spin number, one can obtain the effective field in the unit of Tesla according to $H^{eff}_i=-\partial E/\gamma\hbar S\partial m_i$.
 
