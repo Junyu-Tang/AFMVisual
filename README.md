@@ -267,7 +267,7 @@ So the input parameters $B_E, B_A, B_h, B_0, D'$ are all in Tesla [T] unit.
 ## Updates
 * In progress
 * 
-  Now, I am working on how to efficiently find all the true euqilibirum position for AFM, including local enenrgy minima.
+  Now, I am working on how to efficiently find all the true euqilibirum position (including local enenrgy minima) for AFM with the presence of DMI.
 
 * Version-2.1 2025/04/16
  
