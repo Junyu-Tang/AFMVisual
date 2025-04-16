@@ -13,6 +13,8 @@ BeginPackage["AFMVisual`"]
 	   Zeeman fields:                B0 = H0/\[HBar]\[Gamma]S
 	   DMI fields:                   D1 = -M2 x D/\[HBar]\[Gamma]S      D2 = -D x M1/\[HBar]\[Gamma]S 
 	 *)
+	 
+	AFMVersion = "2.1";
 	
 	(* Public variables and functions *)
 	BE::usage = "Positive exchange field";
@@ -35,12 +37,17 @@ BeginPackage["AFMVisual`"]
 	PlotEigen::usage   = "Plot the eigenmodes";
 	EvolveToEq::usage  = "Find the equilibirum position";
 	AFMDynamics::usage = "Find M1 and M2 dynamics with input fields";
-	FindEnergyMinima::usage = "Find all possible energy minima";
+	FindEnergyMinima::usage = "Find one local energy minima around the given point";
 	FindGS::usage = "Find lowest energy minima";
 	AFMEnergy::usage = "Calcuate the AFM energy";
 	Meq::usage = "Record of M position in AFMDynamics";
 	E\[Alpha]::usage = "Energy of \[Alpha] mode";
 	E\[Beta]::usage = "Energy of \[Beta] mode";
+	Linearized::usage = "Linearize LLG";
+	MLLG::usage = "AFM LLG matrix (4 by 4) at the given ground state";
+	CalDMI::usage = "Calculte DMI field";
+	CalAns::usage = "Calculate Anisotropy field";
+	LLG::usage = "Tansform all the fields in the local coordinates of M1 and M2";
 	
 	BE = 1;       (* Exchange strength BE=J/\[HBar]\[Gamma]S. Default value: 1 *)
 	EasyAxis = {};(* Stores the magnitudes (BA=2Ka/\[HBar]\[Gamma]S>0) and normalized directional vectors of easy axis *)
@@ -48,7 +55,7 @@ BeginPackage["AFMVisual`"]
 	DMI      = {};(* Stores the magnitudes D (D1=-M2 x D/\[HBar]\[Gamma]S, D2=-D x M1/\[HBar]\[Gamma]S) and normalized difectional vectors of DMI vector*)
 	BFieldDC = {};(* Stores DC Zeeman fields B0 = H0/\[HBar]\[Gamma]S *)
 	\[Gamma] = 0.176085963023;(* Angular gyromagnetic ratio with unit THZ*rad/Tesla such that time is in picosecond scale*)
-	AFMVersion = "2.0";
+	
 	
 
 
@@ -100,7 +107,7 @@ Begin["`Private`"]
 							If[Length[BFieldDC]>0, Zeeman=Sum[-BFieldDC[[i,1]]*(S1+S2) . BFieldDC[[i,2]],{i,1,Length[BFieldDC]}], Zeeman=0];
 							Heisenberg+Easy+Hard+Zeeman+Moriya];
 							
-	(* Find one local energy minima *)
+	(* Find one local energy minima around the given point *)
 	FindEnergyMinima[\[Theta]10_, \[Theta]20_, \[Phi]10_, \[Phi]20_,switch_:"on"] := Module[{S1,S2,\[Theta]1,\[Theta]2,\[Phi]1,\[Phi]2,Sol,vars,values,pair}, S1={Sin[\[Theta]1]*Cos[\[Phi]1], Sin[\[Theta]1]*Sin[\[Phi]1], Cos[\[Theta]1]}; S2={Sin[\[Theta]2]*Cos[\[Phi]2], Sin[\[Theta]2]*Sin[\[Phi]2], Cos[\[Theta]2]};
 							Sol=FindMinimum[{AFMEnergy[S1,S2], \[Theta]1>=0 && \[Theta]2>=0 && \[Phi]1>=0 && \[Phi]2>=0 && \[Theta]1<=Pi && \[Theta]2<=Pi && \[Phi]1<=2*Pi && \[Phi]2<=2*Pi},{{\[Theta]1,\[Theta]10},{\[Theta]2,\[Theta]20},{\[Phi]1,\[Phi]10},{\[Phi]2,\[Phi]20}},
 							Gradient->{D[AFMEnergy[S1,S2],\[Theta]1],D[AFMEnergy[S1,S2],\[Theta]2],D[AFMEnergy[S1,S2],\[Phi]1],D[AFMEnergy[S1,S2],\[Phi]2]}];
@@ -169,14 +176,27 @@ Begin["`Private`"]
 						
 	 (* Evolve the M1 and M2 according to FL and DL as designed input driving forces *)
 	 (*No manipulate plot version, allowing for lager tmax*)		
-	 AFMDynamics[\[Alpha]G_, \[CapitalDelta]t_, tmax_, FL_, DL_, m1i_, m2i_] := Module[{Btot, mag, Bgplot, Mplot, trace},
+	 AFMDynamics["m1m2", \[Alpha]G_, \[CapitalDelta]t_, tmax_, FL_, DL_, m1i_, m2i_] := Module[{Btot, mag, Bgplot, Mplot, trace},
 	                 mag = {{Normalize[m1i], Normalize[m2i]}};
 	                 If[Length[BFieldDC] > 0, Btot = Sum[BFieldDC[[i, 1]]*BFieldDC[[i, 2]], {i, 1, Length[BFieldDC]}], Btot = {0, 0, 0}];
 	                 Do[AppendTo[mag, LLGSolver[mag[[j - 1, 1]], mag[[j - 1, 2]], Btot + FL[(j - 2)*\[CapitalDelta]t], DL[(j - 2)*\[CapitalDelta]t], BE, \[Alpha]G, \[CapitalDelta]t]];,{j, 2, tmax}];
 	                 Bgplot = DispConfg["Clean"];
 	                 Mplot = DispM[mag[[tmax, 1]], mag[[tmax, 2]]];
 	                 trace = Graphics3D[{{Blue, Line[mag[[1 ;; tmax, 1]]]}, {Red, Line[mag[[1 ;; tmax, 2]]]}}, Boxed -> False, Axes -> False, PlotRange -> All, ImageSize -> Medium];
-	                 Show[Bgplot, trace, Mplot]];						
+	                 Show[Bgplot, trace, Mplot]];
+	                 
+	AFMDynamics["mn",Enlarge_, \[Alpha]G_, \[CapitalDelta]t_, tmax_, FL_, DL_, m1i_, m2i_] := Module[{Btot, mag, Bgplot, Mplot, trace, M, Mtrace, N, Ntrace},
+	                 mag = {{Normalize[m1i], Normalize[m2i]}};
+	                 If[Length[BFieldDC] > 0, Btot = Sum[BFieldDC[[i, 1]]*BFieldDC[[i, 2]], {i, 1, Length[BFieldDC]}], Btot = {0, 0, 0}];
+	                 Do[AppendTo[mag, LLGSolver[mag[[j - 1, 1]], mag[[j - 1, 2]], Btot + FL[(j - 2)*\[CapitalDelta]t], DL[(j - 2)*\[CapitalDelta]t], BE, \[Alpha]G, \[CapitalDelta]t]];,{j, 2, tmax}];
+	                 Bgplot = DispConfg["Clean"];
+	                 M = Enlarge*(mag[[tmax, 1]]+mag[[tmax, 2]])/2;
+	                 N = Enlarge*(mag[[tmax, 1]]-mag[[tmax, 2]])/2;
+	                 Mtrace = Enlarge*(mag[[1 ;; tmax, 1]]+mag[[1 ;; tmax, 2]])/2;
+	                 Ntrace = Enlarge*(mag[[1 ;; tmax, 1]]-mag[[1 ;; tmax, 2]])/2;
+	                 Mplot = Graphics3D[{{Blue,Arrow[{{0,0,0},M}],Text["M",1.1*M]},{Red,Arrow[{{0,0,0},N}],Text["N",1.1*N]}},Boxed->False,Axes->False,PlotRange->All];
+	                 trace = Graphics3D[{{Blue, Line[Mtrace]}, {Red, Line[Ntrace]}}, Boxed -> False, Axes -> False, PlotRange -> All, ImageSize -> Medium];
+	                 Show[Bgplot, trace, Mplot]];
 	
 	(* Calculate total anisotropy field *)
 	CalAns[Md_] := Module[{Beasy,Bhard},
@@ -255,6 +275,53 @@ Begin["`Private`"]
 	(* Plot the Eigenstates*)
 	PlotEigen[] := Manipulate[Module[{Vals,Vecs,EqAngle,\[Theta]1,\[Theta]2,\[Phi]1,\[Phi]2,S,m1x,m1y,m2x,m2y,n1,n2,M1t,M2t,Neel,Mag,TraceM1,TraceM2,TraceM,TraceN,fig},
 							EqAngle=FindGS["off"]; \[Theta]1=EqAngle[[1]]; \[Theta]2=EqAngle[[2]]; \[Phi]1=EqAngle[[3]]; \[Phi]2=EqAngle[[4]];
+							{Vals,Vecs} = Eigensystem[Linearized[MLLG[\[Theta]1,\[Theta]2,\[Phi]1,\[Phi]2]]];
+							S = Transpose@SortBy[Transpose[{Re[-I*Vals],Vecs}], First];
+							m1x = S[[2, mode, 1]];
+							m1y = S[[2, mode, 2]];
+							m2x = S[[2, mode, 3]];
+							m2y = S[[2, mode, 4]];
+							E\[Alpha]  = S[[1,4]]; E\[Beta]  = S[[1,3]];
+							n1 = {Sin[\[Theta]1]*Cos[\[Phi]1], Sin[\[Theta]1]*Sin[\[Phi]1], Cos[\[Theta]1]};
+							n2 = {Sin[\[Theta]2]*Cos[\[Phi]2], Sin[\[Theta]2]*Sin[\[Phi]2], Cos[\[Theta]2]};
+							M1t[t_,amp_] := LocalToGlobal[amp*{Re[m1x*Exp[I*t]], Re[m1y*Exp[I*t]], 0},n1]+n1;
+							M2t[t_,amp_] := LocalToGlobal[amp*{Re[m2x*Exp[I*t]], Re[m2y*Exp[I*t]], 0},n2]+n2;
+							Neel[t_,amp_]:= (M1t[t,amp]-M2t[t,amp])/2;
+							Mag[t_,amp_] := (M1t[t,amp]+M2t[t,amp])/2;
+							TraceM1 = Table[M1t[dt, Amp],{dt,0,2*Pi,2*Pi/100}];
+							TraceM2 = Table[M2t[dt, Amp],{dt,0,2*Pi,2*Pi/100}];
+							TraceM  = Table[Mag[dt, Amp],{dt,0,2*Pi,2*Pi/100}];
+							TraceN  = Table[Neel[dt,  Amp],{dt,0,2*Pi,2*Pi/100}];
+							fig=Graphics3D[{
+							If[nl == 0,{Blue,Thin, Line[TraceM1]}],
+							If[nl == 0,{Red, Thin, Line[TraceM2]}],
+							If[nl == 0,{Blue,Thick,Arrow[{{0,0,0},M1t[T, Amp]}]}],
+							If[nl == 0,{Red, Thick,Arrow[{{0,0,0},M2t[T, Amp]}]}],
+							If[nl == 0,{Black,Text[Style["m1",12,Italic],M1t[T, Amp],{1.2,1.2}]}],
+							If[nl == 0,{Black,Text[Style["m2",12,Italic],M2t[T, Amp],{1.2,1.2}]}],
+							If[nl == 1,{Blue, Thick,Arrow[{{0,0,0},Ms*Mag[T, Amp]}]}],
+							If[nl == 1,{Red,Thick,Arrow[{{0,0,0},Ns*Neel[T,Amp]}]}],
+							If[nl == 1,{Blue, Thin, Line[Ms*TraceM]}],
+							If[nl == 1,{Red,Thin, Line[Ns*TraceN]}],
+							If[nl == 1,{Black,Text[Style["N",12,Italic],Ns*Neel[T, Amp],{1.2,1.2}]}],
+							If[nl == 1,{Black,Text[Style["M",12,Italic],Ms*Mag[T, Amp],{1.2,1.2}]}]
+							},
+							Boxed->False,Axes->False,Ticks->None,ImageSize->Large,ImagePadding->0,PlotRange->All];
+							If[FieldSwitch==1, Show[DispConfg["off"],fig], Show[DispConfg["Clean"],fig]]
+							],
+							{{FieldSwitch, 1, "Fields"}, {1->"on", 0->"off"}, SetterBar},
+							{{Amp, 1, "Enlarge"}, 0.01, 10, Appearance->"Labeled"},
+							{{T, 0, "Time"}, 0, 100, Appearance->"Labeled"},
+							{{mode, 4, "Mode"}, {4->"\[Alpha]", 3->"\[Beta]"}, SetterBar},
+							{{nl, 0, "Neel Vector"}, {0->"off", 1->"on"}, SetterBar},
+							Dynamic[If[nl==1,Control[{{Ms,1,"Enlarge m"}, 0.01,100,Appearance->"Labeled"}], Invisible[{{Ms,None},ControlType->None}]]],
+							Dynamic[If[nl==1,Control[{{Ns,1, "Enlarge N"},0.01,100,Appearance->"Labeled"}], Invisible[{{Ns,None},ControlType->None}]]],
+							Dynamic[Column[{"E\[Alpha]="<>ToString[E\[Alpha]], "E\[Beta]="<>ToString[E\[Beta]]}]]];
+							
+							
+							
+	(* Plot the Eigenstates around the given equilibrium position *)
+	PlotEigen[\[Theta]1_,\[Theta]2_,\[Phi]1_,\[Phi]2_] := Manipulate[Module[{Vals,Vecs,S,m1x,m1y,m2x,m2y,n1,n2,M1t,M2t,Neel,Mag,TraceM1,TraceM2,TraceM,TraceN,fig},
 							{Vals,Vecs} = Eigensystem[Linearized[MLLG[\[Theta]1,\[Theta]2,\[Phi]1,\[Phi]2]]];
 							S = Transpose@SortBy[Transpose[{Re[-I*Vals],Vecs}], First];
 							m1x = S[[2, mode, 1]];
