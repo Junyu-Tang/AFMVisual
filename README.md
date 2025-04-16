@@ -221,6 +221,8 @@ Find the equilibirum position of the two sublattice magnetization by evolving th
 * ```PlotEigen[]```
 
  Plot the eigenmode (resonance mode) for the current system's setup. This function will first find the ground state of the system and then linearize the LLG equation without damping and driving fields around each subllattice magnetization's equilibrium position. It will return a ```manuplate``` plot that allows the user to finely tune the demonstration and visualize the magnetization dynamics. Note that the $\alpha$ and $\beta$ modes are defined by their energy: $E_\alpha > E_\beta$. If the two AFMR modes are degenerate $E_\alpha = E_\beta$, ```PlotEigen[]``` will generate some kind of superposition of the two degenerare modes. In such case, an external magentic field should be applied to break the degeneracy for distinguishing the two modes.
+
+Starting from Version2.1, PlotEigen$[\theta 1,\theta 2,\phi 1,\phi 2]$ accepts four angles (polar and azimuthal) for specifying the equilibirum position. When calling withing angles input, ```PlotEigen[]``` will linearized the LLG around the given equilibirum position and presents the dynamics of the eigenmodes. Howver, if a position that is not the equilibirum position (not the local enenrgy minima), then output dynamics would be wrong/meaningless (but ```PlotEigen``` would not export an error or warning). It's the user's responsibility to check the correctness of the output.
 <br/><br/>
 
  * ```AFMDynmaics[G_, dt_ ,tmax_, HFL_, HDL_, m1i, m2i]```
@@ -262,7 +264,16 @@ As we have mentioned, all the parameters $J,K_a,K_h,H_0,D$ are in energy unit.
 So the input parameters $B_E, B_A, B_h, B_0, D'$ are all in Tesla [T] unit.
 
 
-## Update
+## Updates
+* In progress
+  Now, I am working on how to efficiently find all the true euqilibirum position for AFM, including local enenrgy minima.
+
+* Version-2.1 2025/04/16
+ 
+  Now ```PlotEigen``` suports for examing the eigenmode with a given input for equilibirum position of spins. If a position that is not the equilibirum position (not the local enenrgy minima), then output dynamics would be wrong/meaningless (but ```PlotEigen``` would not export an error or warning). It's the user's responsibility to check the correctness of the output.
+
+  More functions are set to be availiable for external call and debugging. This increases the visibility for intermediate step in simulation process, makes the debugging more convenient. However, the users should be careful when defining their own function since the functions may be overshadowed if they share the same function name.
+  
 * Version-2.0 2025/01/28
   
   Some bugs haven been fixed. Now, AFMVisual supports Dzyaloshinskii–Moriya interaction (DMI)!
