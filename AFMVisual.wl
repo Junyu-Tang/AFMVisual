@@ -94,9 +94,9 @@ Begin["`Private`"]
 					{Opacity[0.1],Gray,Sphere[{0,0,0},1]}},ImageSize->Medium,Boxed->False,Axes->False,PlotRange->All];fig];
 					
 	(* Display the Magnetic configurations *)
-	DispM[S1_, S2_] := Graphics3D[{{Blue,Arrow[{{0,0,0},Normalize[S1]}],Text["M1",1.1*Normalize[S1]]},{Red,Arrow[{{0,0,0},Normalize[S2]}],Text["M2",1.1*Normalize[S2]]}},Boxed->False,Axes->False,PlotRange->All];
-	DispM[\[Theta]1_,\[Theta]2_,\[Phi]1_,\[Phi]2_] := Module[{S1, S2}, S1={Sin[\[Theta]1]*Cos[\[Phi]1], Sin[\[Theta]1]*Sin[\[Phi]1], Cos[\[Theta]1]}; S2={Sin[\[Theta]2]*Cos[\[Phi]2], Sin[\[Theta]2]*Sin[\[Phi]2], Cos[\[Theta]2]};
-								Graphics3D[{{Blue,Arrow[{{0,0,0},S1}],Text["M1",1.1*S1]},{Red,Arrow[{{0,0,0},S2}],Text["M2",1.1*S2]}},Boxed->False,Axes->False,PlotRange->All]];
+	DispM[S1_, S2_] := Module[{Bgplot}, Bgplot=DispConfg["Clean"];Show[Graphics3D[{{Blue,Arrow[{{0,0,0},Normalize[S1]}],Text["M1",1.1*Normalize[S1]]},{Red,Arrow[{{0,0,0},Normalize[S2]}],Text["M2",1.1*Normalize[S2]]}},Boxed->False,Axes->False,PlotRange->All],Bgplot]];
+	DispM[\[Theta]1_,\[Theta]2_,\[Phi]1_,\[Phi]2_] := Module[{S1, S2, Bgplot},S1={Sin[\[Theta]1]*Cos[\[Phi]1], Sin[\[Theta]1]*Sin[\[Phi]1], Cos[\[Theta]1]}; S2={Sin[\[Theta]2]*Cos[\[Phi]2], Sin[\[Theta]2]*Sin[\[Phi]2], Cos[\[Theta]2]};Bgplot = DispConfg["Clean"];
+								Show[Bgplot,Graphics3D[{{Blue,Arrow[{{0,0,0},S1}],Text["M1",1.1*S1]},{Red,Arrow[{{0,0,0},S2}],Text["M2",1.1*S2]}},Boxed->False,Axes->False,PlotRange->All]]];
 					
 	(* Energy functional. Unit: \[HBar]\[Gamma]S*T *)
 	(*H = J*M1*M2 - Ka(M1.na)^2 - Ka(M2.na)^2 - Kh(M1.nh)^2 - Kh(M2.nh)^2 - H0*(M1+M2) + D*(M1 x M2)*)
