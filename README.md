@@ -277,7 +277,7 @@ So the input parameters $B_E, B_A, B_h, B_0, D'$ are all in Tesla [T] unit.
 
 * Version-2.1 2025/04/16
  
-  Now ```PlotEigen``` suports for examing the eigenmode with a given input for equilibirum position of two magnetic moments. If a position that is not the equilibirum position (not the local enenrgy minima), then output dynamics would be wrong/meaningless (but ```PlotEigen``` would not export an error or warning). It's the user's responsibility to check the correctness of the output.
+  Now ```PlotEigen``` suports for examing the eigenmode with a given input for equilibirum position of two magnetic moments. If a position that is not the equilibirum position (not the local enenrgy minima), then output dynamics would be wrong/meaningless (but ```PlotEigen``` would not throw errors or warnings). It's the user's responsibility to check the correctness of the output.
 
   More functions are set to be availiable for external call and debugging. This increases the visibility for intermediate step in simulation process, makes the debugging more convenient. However, the users should be careful when defining their own function since the functions may be overshadowed if they share the same function name.
   
