@@ -1,5 +1,5 @@
 # AFMVisual
-A Mathematica Paclet/Package that allows for visualization of two-sublattice antiferromagnetic dynamics with arbitary of inputs, including Easy-axis anisotropy fields, hard-axis anisotropy fields, Zeeman fields, spin torques and DMI.
+A Mathematica Paclet/Package that allows for visualization of two-sublattice antiferromagnetic dynamics with **arbitary** of inputs, including Easy-axis anisotropy fields, hard-axis anisotropy fields, Zeeman fields, spin torques and DMI.
 The usual workflow is as following:
 
 * Set up the system's magnetic params
